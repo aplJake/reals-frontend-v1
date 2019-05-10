@@ -5,6 +5,7 @@ import axios from "axios";
 import UserProfileForm from "./components/UserProfileForm";
 import { Container, Col, Button, Row, Jumbotron } from "react-bootstrap";
 import styled from "styled-components";
+import {Link} from "react-router-dom";
 
 const ListingItemStyle = styled.div`
   margin: 8px 0;
@@ -234,6 +235,10 @@ class UserProfile extends Component {
     }
   };
 
+  handleAddProperty = () => {
+
+  }
+
   render() {
     console.log("Length", this.state.userProfile.profileDescription.length);
     let descriptionPart;
@@ -285,13 +290,12 @@ class UserProfile extends Component {
               <h4>Your listings</h4>
             </Col>
             <Col className="to-right">
-              <Button
-                className="to-right"
-                type="submit"
-                onClick={this.submitForm}
-              >
-                Add Property
-              </Button>
+              <Link to="/property/new">
+                <Button variant="primary"
+                        onClick={this.handleAddProperty}>
+                  Add Property
+                </Button>
+              </Link>
             </Col>
           </Row>
 

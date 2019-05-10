@@ -15,6 +15,7 @@ import Signup from "./components/auth/Signup";
 import Signout from "./components/auth/Signout";
 import Signin from "./components/auth/Signin";
 import UserProfile from "./components/UserProfile";
+import PropertyForm from "./components/PropertForm";
 
 const store = createStore(
   reducers,
@@ -33,6 +34,8 @@ ReactDOM.render(
         <Route path="/profile" component={UserProfile} />
         <Route path="/signout" component={Signout} />
         <Route path="/signin" component={Signin} />
+          <Route path="/property/new" component={PropertyForm} />
+
       </App>
     </BrowserRouter>
   </Provider>,

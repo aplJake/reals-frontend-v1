@@ -22,6 +22,13 @@ const Style = styled.div`
     padding: 3px 9px;
     font-size: 16px;
   }
+  
+  .navbar {
+    background: white;
+    -webkit-box-shadow: 0 8px 6px -6px #999;
+    -moz-box-shadow: 0 8px 6px -6px #999;
+    box-shadow: 0 4px 7px -6px #999;
+  }
 `;
 
 class Header extends Component {
@@ -65,8 +72,7 @@ class Header extends Component {
   render() {
     return (
       <Style>
-        <Container>
-          <Navbar expand="lg">
+          <Navbar expand="lg" className="fixed-top">
             <Link to="/">
               <Navbar.Brand>Reals</Navbar.Brand>
             </Link>
@@ -97,7 +103,6 @@ class Header extends Component {
               </Nav>
             </Navbar.Collapse>
           </Navbar>
-        </Container>
       </Style>
 
       // <Link to="/">Redux Auth</Link>
