@@ -18,6 +18,7 @@ class Signin extends Component {
 
     return (
       <AuthWrapper>
+        <h3>Sign In</h3>
         <form onSubmit={handleSubmit(this.onSubmit)}>
           <FormGroup controlId="email" bsSize="large">
             <Form.Label>Email</Form.Label>

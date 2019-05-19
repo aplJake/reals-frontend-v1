@@ -30,6 +30,7 @@ class PropertyForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      countryList: [],
       newProperty: {
         user_id: "",
         construction_type: "apartment",
@@ -43,7 +44,14 @@ class PropertyForm extends React.Component {
         listing_description: "",
         listing_price: "",
         listing_currency: "usd",
-        listing_is_active: true
+        listing_is_active: true,
+        addresses: {
+          street_name: "",
+          street_number: "",
+          city_name: "",
+          country_name: "",
+          zip_code: "",
+        }
       }
     }
   }
@@ -101,6 +109,9 @@ class PropertyForm extends React.Component {
         user_id: token.UserId
       }
     });
+
+    // GET REQUEST FOR ALL COUNTRY DATA
+    // SET STATE countryList
   }
 
 
@@ -219,7 +230,7 @@ class PropertyForm extends React.Component {
                               placeholder="Enter selling price"
                               for={this.state.newProperty.listing_price}
                               name={"listing_price"}
-                              onChange={this.handleSelectCurrencyTypeChange}/>/>
+                              onChange={this.handleSelectCurrencyTypeChange}/>
               </Form.Group>
 
               <Form.Group as={Col} controlId="formGridCurrencyType">
@@ -238,25 +249,25 @@ class PropertyForm extends React.Component {
             </Form.Row>
 
 
-            {/*<Form.Row>*/}
-            {/*  <Form.Group as={Col} controlId="formGridCity">*/}
-            {/*    <Form.Label>City</Form.Label>*/}
-            {/*    <Form.Control/>*/}
-            {/*  </Form.Group>*/}
+            <Form.Row>
+              <Form.Group as={Col} controlId="formGridCity">
+                <Form.Label>City</Form.Label>
+                <Form.Control/>
+              </Form.Group>
 
-            {/*  <Form.Group as={Col} controlId="formGridState">*/}
-            {/*    <Form.Label>State</Form.Label>*/}
-            {/*    <Form.Control as="select">*/}
-            {/*      <option>Choose...</option>*/}
-            {/*      <option>...</option>*/}
-            {/*    </Form.Control>*/}
-            {/*  </Form.Group>*/}
+              <Form.Group as={Col} controlId="formGridCountry">
+                <Form.Label>State</Form.Label>
+                <Form.Control as="select">
+                  <option>Choose...</option>
+                  <option>...</option>
+                </Form.Control>
+              </Form.Group>
 
-            {/*  <Form.Group as={Col} controlId="formGridZip">*/}
-            {/*    <Form.Label>Zip</Form.Label>*/}
-            {/*    <Form.Control/>*/}
-            {/*  </Form.Group>*/}
-            {/*</Form.Row>*/}
+              <Form.Group as={Col} controlId="formGridZip">
+                <Form.Label>Zip</Form.Label>
+                <Form.Control/>
+              </Form.Group>
+            </Form.Row>
 
             <Form.Group>
               <Form.Check

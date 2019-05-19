@@ -18,6 +18,7 @@ class Signup extends Component {
 
     return (
       <AuthWrapper>
+        <h3>Sign Up</h3>
         <form onSubmit={handleSubmit(this.onSubmit)}>
           <FormGroup controlId="user_name" bgSize="large">
             <Form.Label>Username</Form.Label>

@@ -32,6 +32,12 @@ const Style = styled.div`
 `;
 
 class Header extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    }
+  }
+
   renderLinks() {
     if (this.props.authenticated) {
       return (
@@ -70,44 +76,52 @@ class Header extends Component {
   }
 
   render() {
+    // if( window.location.pathname === "/signup" ||
+    //     window.location.pathname === "/signin" ||
+    //     window.location.pathname === "/admin") {
+    //   return null
+    // }
+
     return (
+
       <Style>
-          <Navbar expand="lg" className="fixed-top">
-            <Link to="/">
-              <Navbar.Brand>Reals</Navbar.Brand>
-            </Link>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="ml-auto">
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/homes">
-                    Homes
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/apartments">
-                    Apartments
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/new-buildings">
-                    New Buildings
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/new-buildings">
-                    New Buildings
-                  </Nav.Link>
-                </Nav.Item>
-                {this.renderLinks()}
-              </Nav>
-            </Navbar.Collapse>
-          </Navbar>
+        <Navbar expand="lg" className="fixed-top">
+          <Link to="/">
+            <Navbar.Brand>Reals</Navbar.Brand>
+          </Link>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ml-auto">
+              <Nav.Item>
+                <Nav.Link as={Link} to="/homes">
+                  Homes
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link as={Link} to="/apartments">
+                  Apartments
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link as={Link} to="/new-buildings">
+                  New Buildings
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link as={Link} to="/new-buildings">
+                  New Buildings
+                </Nav.Link>
+              </Nav.Item>
+              {this.renderLinks()}
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
       </Style>
 
       // <Link to="/">Redux Auth</Link>
       // {this.renderLinks()}
     );
+
   }
 }
 

@@ -157,6 +157,8 @@ class UserProfile extends Component {
       userId: token.UserId
     });
 
+    console.log("User JWT Token", token)
+
     axios
       .get(`http://localhost:2308/api/${token.UserId}`)
       .then(response => {
