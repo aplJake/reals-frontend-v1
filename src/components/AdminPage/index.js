@@ -1,11 +1,10 @@
-import React from "react"
+import React, {useState, useEffect } from "react"
 import requireAuth from "../requireAuth";
 import Axios from "axios";
 import decode from "jwt-decode";
 import {Link, Redirect} from "react-router-dom";
 import styled from "styled-components";
-import divWithClassName from "react-bootstrap/es/utils/divWithClassName";
-import {Table} from "react-bootstrap";
+import {Button, Table} from "react-bootstrap";
 
 export const SideNav = styled.div`
   height: 100%;
@@ -32,11 +31,8 @@ export const MainSidebarContent = styled.div`
   padding: 0 60px;
 `;
 
-export const UsersAdminInfo = ({props}) => (
-  <AdminWrapper>
-    User info
-  </AdminWrapper>
-);
+
+
 
 export const ListingsAdminInfo = ({props}) => (
   <AdminWrapper>
@@ -54,6 +50,7 @@ export const AdminWrapper = ({children}) => (
   <div>
     <SideNav>
       <Link to={`/admin/users`}>Users</Link>
+      <Link to={`/admin/admins`}>Admins</Link>
       <Link to={`/admin/listings`}>Listings</Link>
       <Link to={`/admin/countries`}>Countries</Link>
     </SideNav>
@@ -128,58 +125,14 @@ class AdminPage extends React.Component {
 
     if(pageAccess) {
       return(
-        <div>
+        <AdminWrapper>
           {/*<SideNav>*/}
           {/*  <Link to={`${this.props.match.url}/users`}>Users</Link>*/}
           {/*  <Link to={`${this.props.match.url}/listings`}>Listings</Link>*/}
           {/*  <Link to={`${this.props.match.url}/countries`}>Countries</Link>*/}
           {/*</SideNav>*/}
-
-          <AdminWrapper>
-            <Table responsive striped bordered hover>
-              <thead>
-              <tr>
-                <th>#</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-                <th>Table heading</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>1</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-                <td>Table cell</td>
-              </tr>
-              </tbody>
-            </Table>
-          </AdminWrapper>
-        </div>
+          <h3>Admin Control Page</h3>
+        </AdminWrapper>
 
       )
     } else {
@@ -189,5 +142,4 @@ class AdminPage extends React.Component {
 
   }
 }
-
 export default requireAuth(AdminPage);

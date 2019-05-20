@@ -21,8 +21,8 @@ import AdminPage, {
   CountriesAdminInfo,
   ListingsAdminInfo,
   SideNav,
-  UsersAdminInfo
 } from "./components/AdminPage";
+import UsersAdminInfo from "./components/AdminPage/UsersAdminInfo";
 
 const store = createStore(
   reducers,
@@ -44,6 +44,7 @@ ReactDOM.render(
         <Route path="/property/new" component={PropertyForm} />
         <Route path="/admin" component={AdminPage}/>
         <Route path="/admin/users" component={UsersAdminInfo}/>
+        {/*<Route path="/admin/admins" component={}/>*/}
         <Route path="/admin/countries" component={CountriesAdminInfo}/>
         <Route path="/admin/listings" component={ListingsAdminInfo}/>
       </App>
