@@ -8,7 +8,7 @@ const Style = styled.div`
 `
 
 const Wrapper = styled.div`
-  margin: 80px 0;
+  margin: 55px 0;
 `
 
 export default ({ children }) => {

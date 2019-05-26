@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from "react";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import React, {Component, Fragment} from "react";
+import {Link} from "react-router-dom";
+import {connect} from "react-redux";
 import "./HeaderStyle.css";
-import { Nav, Navbar, Button, Container } from "react-bootstrap";
+import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import styled from "styled-components";
 
 const Style = styled.div`
@@ -29,13 +29,16 @@ const Style = styled.div`
     -moz-box-shadow: 0 8px 6px -6px #999;
     box-shadow: 0 4px 7px -6px #999;
   }
+  
+  a {
+    font-weight: 500;
+  }
 `;
 
 class Header extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    }
+    this.state = {}
   }
 
   renderLinks() {
@@ -44,12 +47,12 @@ class Header extends Component {
         <Fragment>
           <Nav.Item>
             <Link to="/signout">
-              <Button variant="outline-primary">Sign Out</Button>
+              <Button variant="link">Sign Out</Button>
             </Link>
           </Nav.Item>
           <Nav.Item>
             <Link to="/profile">
-              <Button variant="primary">My Profile</Button>
+              <Button variant="link">My Profile</Button>
             </Link>
           </Nav.Item>
         </Fragment>
@@ -58,13 +61,14 @@ class Header extends Component {
       return (
         <Fragment>
           <Nav.Item>
+
             <Link to="/signup">
-              <Button variant="outline-primary">Sign Up</Button>
+              <Button variant="link">Sign Up</Button>
             </Link>
           </Nav.Item>
           <Nav.Item>
             <Link to="/signin">
-              <Button variant="primary">Sign In</Button>
+              <Button variant="link">Sign In</Button>
             </Link>
             {/* <Button as={Link} to="/signin" variant="primary">
               Sign In
@@ -83,38 +87,31 @@ class Header extends Component {
     // }
 
     return (
-
       <Style>
         <Navbar expand="lg" className="fixed-top">
-          <Link to="/">
-            <Navbar.Brand>Reals</Navbar.Brand>
-          </Link>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ml-auto">
-              <Nav.Item>
-                <Nav.Link as={Link} to="/homes">
-                  Homes
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link as={Link} to="/apartments">
-                  Apartments
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link as={Link} to="/new-buildings">
-                  New Buildings
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link as={Link} to="/new-buildings">
-                  New Buildings
-                </Nav.Link>
-              </Nav.Item>
-              {this.renderLinks()}
-            </Nav>
-          </Navbar.Collapse>
+          <Container>
+
+            <Link to="/">
+              <Navbar.Brand>Reals</Navbar.Brand>
+            </Link>
+            <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="ml-auto">
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/homes">
+                    Homes
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link as={Link} to="/apartments">
+                    Apartments
+                  </Nav.Link>
+                </Nav.Item>
+                {this.renderLinks()}
+              </Nav>
+            </Navbar.Collapse>
+          </Container>
+
         </Navbar>
       </Style>
 
@@ -126,7 +123,7 @@ class Header extends Component {
 }
 
 function mapStateToProps(state) {
-  return { authenticated: state.auth.authenticated };
+  return {authenticated: state.auth.authenticated};
 }
 
 export default connect(mapStateToProps)(Header);

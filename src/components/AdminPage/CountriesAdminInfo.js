@@ -5,11 +5,11 @@ import {Button, Table} from "react-bootstrap";
 import React from "react"
 import {AdminWrapper} from "./index";
 
-class UsersAdminInfo extends React.Component {
+class CountriesAdminInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [],
+      listings: [],
       tokenPayload: "",
     }
   }
@@ -23,7 +23,7 @@ class UsersAdminInfo extends React.Component {
     });
 
     Axios
-      .get(`http://localhost:2308/api/admin/${token.UserId}/users`)
+      .get(`http://localhost:2308/api/admin/${token.UserId}/listings`)
       .then(response => {
         console.log(response);
         this.setState({
@@ -52,26 +52,26 @@ class UsersAdminInfo extends React.Component {
           </tr>
           </thead>
           <tbody>
-            {this.state.listings.map(item => (
-              <UserTableItem key={item.user_id} user={item} adminId={this.state.tokenPayload.UserId} />
-            ))}
+          {this.state.listings.map(item => (
+            <ListingTableItem key={item.user_id} listings={item} adminId={this.state.tokenPayload.UserId} />
+          ))}
           </tbody>
         </Table>
-
       </AdminWrapper>
     );
   }
 };
 
-class UserTableItem extends React.Component {
+class ListingTableItem extends React.Component {
   constructor(props) {
     super(props);
 
   }
 
+  // Delete admin action
   createAdminUserHandler = () => {
     Axios
-      .post(`http://localhost:2308/api/admin/${this.props.adminId}/users`,
+      .post(`http://localhost:2308/api/admin/${this.props.adminId}/listings`,
         this.props.user
       )
       .then(response => {
@@ -83,15 +83,15 @@ class UserTableItem extends React.Component {
   render() {
     return(
       <tr>
-        <td>{this.props.user.user_id}</td>
-        <td>{this.props.user.user_name}</td>
-        <td>{this.props.user.email}</td>
-        <td>{this.props.user.password}</td>
+        <td>{this.props.listing.user_id}</td>
+        <td>{this.props.listing.user_name}</td>
+        <td>{this.props.listing.email}</td>
+        <td>{this.props.listing.password}</td>
         <td>
-          <Button onClick={this.createAdminUserHandler}>Make Admin</Button>
+          <Button onClick={this.createAdminUserHandler}>Remove</Button>
         </td>
       </tr>
     )
   }
 }
-export default requireAuth(UsersAdminInfo);
+export default requireAuth(CountriesAdminInfo);

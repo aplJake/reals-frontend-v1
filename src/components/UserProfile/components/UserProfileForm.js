@@ -52,33 +52,31 @@ export default class UserProfileForm extends Component {
 
   render() {
     return (
-      <Container>
-        <Row>
-        <Col md="10">
-          <form
-          >
-            <FormGroup controlId="profile_description">
-              <FormControl
-                autoComplete="off"
-                type="text"
-                placeholder="Enter your profile description"
-                value={this.state.newProfile.profileDescription}
-                onChange={this.handleInput}
-              />
-            </FormGroup>
-          </form>
-        </Col>
-        <Col className="to-right">
-          <Button
-            type="submit"
-            onClick={this.submitForm}
-            className="to-right"
-          >
-            Add desciption
-          </Button>
-        </Col>
-      </Row>
-      </Container>
+      <Row>
+      <Col md="9">
+        <form
+        >
+          <FormGroup controlId="profile_description">
+            <FormControl
+              autoComplete="off"
+              type="text"
+              placeholder="Enter your profile description"
+              value={this.state.newProfile.profileDescription}
+              onChange={this.handleInput}
+            />
+          </FormGroup>
+        </form>
+      </Col>
+      <Col className="to-right">
+        <Button
+          type="submit"
+          onClick={this.submitForm}
+          className="to-right"
+        >
+          Add
+        </Button>
+      </Col>
+    </Row>
     );
   }
 }

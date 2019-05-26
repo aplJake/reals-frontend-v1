@@ -21,7 +21,6 @@ class Signup extends Component {
         <h3>Sign Up</h3>
         <form onSubmit={handleSubmit(this.onSubmit)}>
           <FormGroup controlId="user_name" bgSize="large">
-            <Form.Label>Username</Form.Label>
             <Field
               name="user_name"
               type="text"
@@ -32,7 +31,6 @@ class Signup extends Component {
             />
           </FormGroup>
           <FormGroup controlId="email" bsSize="large">
-            <Form.Label>Email</Form.Label>
             <Field
               name="email"
               type="text"
@@ -43,7 +41,6 @@ class Signup extends Component {
             />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
-            <Form.Label>Password</Form.Label>
             <Field
               name="password"
               type="password"

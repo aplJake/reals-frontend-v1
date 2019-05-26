@@ -18,11 +18,11 @@ import UserProfile from "./components/UserProfile";
 import PropertyForm from "./components/PropertForm";
 import AdminPage, {
   AdminWrapper,
-  CountriesAdminInfo,
   ListingsAdminInfo,
   SideNav,
 } from "./components/AdminPage";
 import UsersAdminInfo from "./components/AdminPage/UsersAdminInfo";
+import CountriesAdminInfo from "./components/AdminPage/CountriesAdminInfo";
 
 const store = createStore(
   reducers,

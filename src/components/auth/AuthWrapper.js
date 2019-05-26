@@ -14,7 +14,7 @@ export const BootstrapReduxField = ({ type, placeholder, input, min }) => (
 export const AuthWrapper = props => (
   <Jumbotron>
     <Container>
-      <Col md={{ span: 4, offset: 4 }}>{props.children}</Col>
+      <Col md={{ span: 3, offset: 4 }}>{props.children}</Col>
     </Container>
   </Jumbotron>
 );

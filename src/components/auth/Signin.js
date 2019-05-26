@@ -21,7 +21,6 @@ class Signin extends Component {
         <h3>Sign In</h3>
         <form onSubmit={handleSubmit(this.onSubmit)}>
           <FormGroup controlId="email" bsSize="large">
-            <Form.Label>Email</Form.Label>
             <Field
               name="email"
               type="text"
@@ -32,7 +31,6 @@ class Signin extends Component {
             />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
-            <Form.Label>Password</Form.Label>
             <Field
               name="password"
               type="password"
