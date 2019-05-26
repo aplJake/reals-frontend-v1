@@ -1,14 +1,41 @@
 import React from "react";
-import {Button, Col, Container, Form} from "react-bootstrap";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import styled from "styled-components";
-import axios from "axios";
+import Axios from "axios";
 import decode from "jwt-decode";
 import requireAuth from "../requireAuth";
 
 const Style = styled.div`
   .prop-name {
-    margin-bottom: 20px;
+    margin: 55px 0;
   }
+`;
+
+const SPageBase = styled.div`
+  background: #f6f6f6;
+`;
+const SSection = styled.div`
+  min-height: 100px;
+  background: white;
+  margin-bottom: 5px;
+  padding: 10px 0;
+  
+  label {
+    font-size: 18px;
+    font-weight: 300;
+  }
+  
+  button {
+    width: 180px;
+  }
+`;
+
+const SSectinHeaderWrapper = styled.div`
+    padding: 20px 20px 20px 0;
+
+`;
+const SSectionH4 = styled.h4`
+  font-weight: 400;
 `;
 
 /*
@@ -31,6 +58,9 @@ class PropertyForm extends React.Component {
     super(props);
     this.state = {
       countryList: [],
+      cityList: [],
+      choosedCountryId: 1,
+      choosedCityId: 1,
       newProperty: {
         user_id: "",
         construction_type: "apartment",
@@ -50,7 +80,7 @@ class PropertyForm extends React.Component {
           street_number: "",
           city_name: "",
           country_name: "",
-          zip_code: "",
+          country_code: "",
         }
       }
     }
@@ -85,9 +115,9 @@ class PropertyForm extends React.Component {
   onFormSubmit = e => {
     e.preventDefault();
 
-    console.log("Request", this.state.newProperty)
+    console.log("Request", this.state.newProperty);
 
-    axios
+    Axios
       .post(`http://localhost:2308/api/${this.state.newProperty.user_id}/property/new`,
         this.state.newProperty
       )
@@ -111,177 +141,394 @@ class PropertyForm extends React.Component {
     });
 
     // GET REQUEST FOR ALL COUNTRY DATA
-    // SET STATE countryList
+    this.getCountries();
+    // GET REQUEST FOR ALL CITIES DATA
+    this.getCitiesByCountry();
+
+
   }
+
+  getCountries = async () => {
+    const response = await Axios.get(`http://localhost:2308/api/countries`);
+    let countries = await response.data.countries;
+    this.setState({
+      countryList: countries,
+    })
+    console.log("List c", this.state.countryList);
+  };
+
+  getCitiesByCountry = async () => {
+    await Axios
+      .get(`http://localhost:2308/api/countries/${this.state.choosedCountryId}/cities`)
+      .then(response => {
+        this.setState({
+          cityList: response.data.cities
+        })
+      })
+      .catch(error => console.log(error));
+    console.log("cities are", this.state.cityList)
+  };
 
 
   render() {
+    console.log("Countries render", this.state.countryList);
+    let countryOptions;
+    let cityOptions;
+
+    if (this.state.countryList.length > 0) {
+      countryOptions = this.state.countryList.map((country) =>
+        <option key={country.country_id}
+                value={country.country_name}>
+          {country.country_name}
+        </option>
+      )
+    }
+
+    if (this.state.choosedCountryId != null && this.state.cityList.length > 0) {
+      cityOptions = this.state.cityList.map((city) =>
+        <option key={city.city_id}
+                value={city.city_name}>
+          {city.city_name}
+        </option>
+      )
+    }
+
     return (
       <Style>
-        <Container>
-          <h4 className={"prop-name"}>New property</h4>
+        <SSection>
+          <Container>
+            <SSectinHeaderWrapper>
+              <SSectionH4>New Listing</SSectionH4>
+            </SSectinHeaderWrapper>
 
-          <Form onSubmit={this.onFormSubmit}>
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridConstructionType">
-                <Form.Label>Construction Type</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.newProperty.construction_type}
-                  name={"construction_type"}
-                  onChange={this.handleSelectPropTypeChange}
-                >
-                  <option defaultValue="apartment">Apartment</option>
-                  <option value="house">House</option>
-                </Form.Control>
+            <Form onSubmit={this.onFormSubmit}>
+
+              <Form.Group as={Row} controlId="formGridConstructionType">
+                <Form.Label column sm={3}>Type</Form.Label>
+                <Col sm={9}>
+                  <Form.Control
+                    as="select"
+                    value={this.state.newProperty.construction_type}
+                    name={"construction_type"}
+                    onChange={this.handleSelectPropTypeChange}
+                  >
+                    <option defaultValue="apartment">Apartment</option>
+                    <option value="house">House</option>
+                  </Form.Control>
+                </Col>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridArea">
-                <Form.Label>Area</Form.Label>
-                <Form.Control type="text"
-                              placeholder="Property area"
-                              for={this.state.newProperty.area}
-                              name={"area"}
-                              onChange={this.handleSelectPropTypeChange}/>
-              </Form.Group>
-            </Form.Row>
-
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridRoomNumber">
-                <Form.Label>Rooms</Form.Label>
-                <Form.Control type="text"
-                              placeholder="Room number"
-                              for={this.state.newProperty.room_number}
-                              name={"room_number"}
-                              onChange={this.handleSelectPropTypeChange}/>
+              <Form.Group as={Row} controlId="formGridArea">
+                <Form.Label column sm={3}>Area</Form.Label>
+                <Col sm={9}>
+                  <Form.Control type="text"
+                                placeholder="Property area"
+                                for={this.state.newProperty.area}
+                                name={"area"}
+                                onChange={this.handleSelectPropTypeChange}/>
+                </Col>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridBathroomNumber">
-                <Form.Label>Bathrooms</Form.Label>
-                <Form.Control type="text"
-                              placeholder="Bathroom number"
-                              for={this.state.newProperty.bathroom_number}
-                              name={"bathroom_number"}
-                              onChange={this.handleSelectPropTypeChange}/>
+              {/* ROOM NUMBER AND BATHROOM NUMBER */}
+              <Form.Group as={Row} controlId="formGridRoomNumber">
+                <Form.Label column sm={3}>Rooms</Form.Label>
+                <Col sm={5}>
+                  <Form.Control type="text"
+                                placeholder="Room number"
+                                for={this.state.newProperty.room_number}
+                                name={"room_number"}
+                                onChange={this.handleSelectPropTypeChange}/>
+                </Col>
+                <Col sm={4}>
+                  <Form.Control type="text"
+                                placeholder="Bathroom number"
+                                for={this.state.newProperty.bathroom_number}
+                                name={"bathroom_number"}
+                                onChange={this.handleSelectPropTypeChange}/>
+                </Col>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridMaxFloor">
-                <Form.Label>Max Floor</Form.Label>
-                <Form.Control type="text"
-                              placeholder="Floor number"
-                              for={this.state.newProperty.max_floor_number}
-                              name={"max_floor_number"}
-                              onChange={this.handleSelectPropTypeChange}/>
+              {/* FLOOR NUMBER */}
+              <Form.Group as={Row} controlId="formGridMaxFloor">
+                <Form.Label column sm={3}>Floors</Form.Label>
+                <Col sm={5}>
+                  <Form.Control type="text"
+                                placeholder="Max floor"
+                                for={this.state.newProperty.max_floor_number}
+                                name={"max_floor_number"}
+                                onChange={this.handleSelectPropTypeChange}/>
+                </Col>
+                <Col sm={4}>
+                  <Form.Control type="text"
+                                placeholder="Property floor"
+                                for={this.state.newProperty.property_floor_number}
+                                name={"property_floor_number"}
+                                onChange={this.handleSelectPropTypeChange}/>
+                </Col>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridPropertyFloor">
-                <Form.Label>Property Floor</Form.Label>
-                <Form.Control type="text"
-                              placeholder="Floor number"
-                              for={this.state.newProperty.property_floor_number}
-                              name={"property_floor_number"}
-                              onChange={this.handleSelectPropTypeChange}/>
-              </Form.Group>
-            </Form.Row>
-
-            <Form.Row>
-              <Form.Group as={Col} md={3}>
-                <Form.Label>Kids</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.newProperty.kids_allowed}
-                  name={"kids_allowed"}
-                  onChange={this.handleSelectPropTypeChange}
-                >
-                  <option value={"true"}>Are allowed</option>
-                  <option value={"false"}>Are not allowed</option>
-                </Form.Control>
-              </Form.Group>
-            </Form.Row>
-
-            <Form.Row>
-              <Form.Group as={Col} md={3}>
-                <Form.Label>Kids</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.newProperty.pets_allowed}
-                  name={"pets_allowed"}
-                  onChange={this.handleSelectPropTypeChange}
-                >
-                  <option value={"true"}>Are allowed</option>
-                  <option value={"false"}>Are not allowed</option>
-                </Form.Control>
-              </Form.Group>
-            </Form.Row>
-
-            <Form.Group controlId="formGridListingDescription">
-              <Form.Label>Listing Description</Form.Label>
-              <Form.Control type="text"
-                            placeholder="Describe your property"
-                            for={this.state.newProperty.listing_description}
-                            name={"listing_description"}
-                            onChange={this.handleSelectCurrencyTypeChange}/>
-            </Form.Group>
-
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridListingPrice">
-                <Form.Label>Listing Price</Form.Label>
-                <Form.Control type="text"
-                              placeholder="Enter selling price"
-                              for={this.state.newProperty.listing_price}
-                              name={"listing_price"}
-                              onChange={this.handleSelectCurrencyTypeChange}/>
+              {/* KIDS AND PETS ALOOWED */}
+              <Form.Group as={Row} md={3}>
+                <Form.Label column sm={3}>Kids/Pets</Form.Label>
+                <Col sm={5}>
+                  <Form.Control
+                    as="select"
+                    value={this.state.newProperty.kids_allowed}
+                    name={"kids_allowed"}
+                    onChange={this.handleSelectPropTypeChange}
+                  >
+                    <option value={true}>Are allowed</option>
+                    <option value={false}>Are not allowed</option>
+                  </Form.Control>
+                </Col>
+                <Col sm={4}>
+                  <Form.Control
+                    as="select"
+                    value={this.state.newProperty.pets_allowed}
+                    name={"pets_allowed"}
+                    onChange={this.handleSelectPropTypeChange}
+                  >
+                    <option value={true}>Are allowed</option>
+                    <option value={false}>Are not allowed</option>
+                  </Form.Control>
+                </Col>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridCurrencyType">
-                <Form.Label>Currency</Form.Label>
-                <Form.Control as="select"
-                              value={this.state.newProperty.listing_currency}
-                              defaultValue="usd"
-                              name={"listing_currency"}
-                              onChange={this.handleSelectCurrencyTypeChange}
-                              >
-                  <option value={"usd"}>USD</option>
-                  <option value={"hrv"}>HRV</option>
-                  <option value={"eur"}>EUR</option>
-                </Form.Control>
-              </Form.Group>
-            </Form.Row>
-
-
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridCity">
-                <Form.Label>City</Form.Label>
-                <Form.Control/>
+              {/* PROPERTY DESCRIPTION */}
+              <Form.Group as={Row} md={3}>
+                <Form.Label column sm={3}>Listing Description</Form.Label>
+                <Col sm={9}>
+                  <Form.Control type="text"
+                                placeholder="Describe your property"
+                                for={this.state.newProperty.listing_description}
+                                name={"listing_description"}
+                                onChange={this.handleSelectCurrencyTypeChange}/>
+                </Col>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridCountry">
-                <Form.Label>State</Form.Label>
-                <Form.Control as="select">
-                  <option>Choose...</option>
-                  <option>...</option>
-                </Form.Control>
+              {/* PROPERTY PRICE AND CURRENCY */}
+              <Form.Group as={Row} md={3}>
+                <Form.Label column sm={3}>Listing Price</Form.Label>
+                <Col sm={5}>
+                  <Form.Control type="text"
+                                placeholder="Enter selling price"
+                                for={this.state.newProperty.listing_price}
+                                name={"listing_price"}
+                                onChange={this.handleSelectCurrencyTypeChange}/>
+                </Col>
+                <Col sm={4}>
+                  <Form.Control as="select"
+                                value={this.state.newProperty.listing_currency}
+                                defaultValue="usd"
+                                name={"listing_currency"}
+                                onChange={this.handleSelectCurrencyTypeChange}
+                  >
+                    <option value={"usd"}>USD</option>
+                    <option value={"hrv"}>HRV</option>
+                    <option value={"eur"}>EUR</option>
+                  </Form.Control>
+                </Col>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="formGridZip">
-                <Form.Label>Zip</Form.Label>
-                <Form.Control/>
+              {/* COUNTRY */}
+              {/* TODO: add the form control*/}
+              <Form.Group as={Row} md={3}>
+                <Form.Label column sm={3}>Country</Form.Label>
+                <Col sm={5}>
+                  <Form.Control as="select"
+                                value={this.state.newProperty.addresses.country_name}
+                                defaultValue={this.state.countryList[0]}
+                                name={"listing_currency"}
+                                onChange={this.handleSelectCurrencyTypeChange}
+                  >
+                    {countryOptions}
+                  </Form.Control>
+                </Col>
+                <Col sm={4}>
+                  <Form.Control as="select"
+                                value={this.state.newProperty.listing_currency}
+                                defaultValue={this.state.cityList[0]}
+                                name={"listing_currency"}
+                                onChange={this.handleSelectCurrencyTypeChange}
+                  >
+                    {cityOptions}
+                  </Form.Control>
+                </Col>
               </Form.Group>
-            </Form.Row>
 
-            <Form.Group>
-              <Form.Check
-                required
-                label="Agree to terms and conditions"
-                feedback="You must agree before submitting."
-              />
-            </Form.Group>
+              {/* SUMIT FORM */}
 
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Container>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </Container>
+        </SSection>
+
+
+        {/*<Container>*/}
+        {/*  <Form onSubmit={this.onFormSubmit}>*/}
+        {/*      <Form.Group as={Row} controlId="formGridConstructionType">*/}
+        {/*        <Form.Label column sm={3}>Type</Form.Label>*/}
+        {/*        <Col sm={9}>*/}
+        {/*          <Form.Control*/}
+        {/*            as="select"*/}
+        {/*            value={this.state.newProperty.construction_type}*/}
+        {/*            name={"construction_type"}*/}
+        {/*            onChange={this.handleSelectPropTypeChange}*/}
+        {/*          >*/}
+        {/*            <option defaultValue="apartment">Apartment</option>*/}
+        {/*            <option value="house">House</option>*/}
+        {/*          </Form.Control>*/}
+        {/*        </Col>*/}
+        {/*      </Form.Group>*/}
+
+
+        {/*<Form.Group as={Col} controlId="formGridArea">*/}
+        {/*  <Form.Label>Area</Form.Label>*/}
+        {/*  <Form.Control type="text"*/}
+        {/*                placeholder="Property area"*/}
+        {/*                for={this.state.newProperty.area}*/}
+        {/*                name={"area"}*/}
+        {/*                onChange={this.handleSelectPropTypeChange}/>*/}
+        {/*</Form.Group>*/}
+
+        {/*<Form.Row>*/}
+        {/*  <Form.Group as={Col} controlId="formGridRoomNumber">*/}
+        {/*    <Form.Label>Rooms</Form.Label>*/}
+        {/*    <Form.Control type="text"*/}
+        {/*                  placeholder="Room number"*/}
+        {/*                  for={this.state.newProperty.room_number}*/}
+        {/*                  name={"room_number"}*/}
+        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
+        {/*  </Form.Group>*/}
+
+        {/*  <Form.Group as={Col} controlId="formGridBathroomNumber">*/}
+        {/*    <Form.Label>Bathrooms</Form.Label>*/}
+        {/*    <Form.Control type="text"*/}
+        {/*                  placeholder="Bathroom number"*/}
+        {/*                  for={this.state.newProperty.bathroom_number}*/}
+        {/*                  name={"bathroom_number"}*/}
+        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
+        {/*  </Form.Group>*/}
+
+        {/*  <Form.Group as={Col} controlId="formGridMaxFloor">*/}
+        {/*    <Form.Label>Max Floor</Form.Label>*/}
+        {/*    <Form.Control type="text"*/}
+        {/*                  placeholder="Floor number"*/}
+        {/*                  for={this.state.newProperty.max_floor_number}*/}
+        {/*                  name={"max_floor_number"}*/}
+        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
+        {/*  </Form.Group>*/}
+
+        {/*  <Form.Group as={Col} controlId="formGridPropertyFloor">*/}
+        {/*    <Form.Label>Property Floor</Form.Label>*/}
+        {/*    <Form.Control type="text"*/}
+        {/*                  placeholder="Floor number"*/}
+        {/*                  for={this.state.newProperty.property_floor_number}*/}
+        {/*                  name={"property_floor_number"}*/}
+        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
+        {/*  </Form.Group>*/}
+        {/*</Form.Row>*/}
+
+        {/*<Form.Row>*/}
+        {/*  <Form.Group as={Col} md={3}>*/}
+        {/*    <Form.Label>Kids</Form.Label>*/}
+        {/*    <Form.Control*/}
+        {/*      as="select"*/}
+        {/*      value={this.state.newProperty.kids_allowed}*/}
+        {/*      name={"kids_allowed"}*/}
+        {/*      onChange={this.handleSelectPropTypeChange}*/}
+        {/*    >*/}
+        {/*      <option value={"true"}>Are allowed</option>*/}
+        {/*      <option value={"false"}>Are not allowed</option>*/}
+        {/*    </Form.Control>*/}
+        {/*  </Form.Group>*/}
+        {/*</Form.Row>*/}
+
+        {/*<Form.Row>*/}
+        {/*  <Form.Group as={Col} md={3}>*/}
+        {/*    <Form.Label>Kids</Form.Label>*/}
+        {/*    <Form.Control*/}
+        {/*      as="select"*/}
+        {/*      value={this.state.newProperty.pets_allowed}*/}
+        {/*      name={"pets_allowed"}*/}
+        {/*      onChange={this.handleSelectPropTypeChange}*/}
+        {/*    >*/}
+        {/*      <option value={"true"}>Are allowed</option>*/}
+        {/*      <option value={"false"}>Are not allowed</option>*/}
+        {/*    </Form.Control>*/}
+        {/*  </Form.Group>*/}
+        {/*</Form.Row>*/}
+
+        {/*<Form.Group controlId="formGridListingDescription">*/}
+        {/*  <Form.Label>Listing Description</Form.Label>*/}
+        {/*  <Form.Control type="text"*/}
+        {/*                placeholder="Describe your property"*/}
+        {/*                for={this.state.newProperty.listing_description}*/}
+        {/*                name={"listing_description"}*/}
+        {/*                onChange={this.handleSelectCurrencyTypeChange}/>*/}
+        {/*</Form.Group>*/}
+
+        {/*<Form.Row>*/}
+        {/*  <Form.Group as={Col} controlId="formGridListingPrice">*/}
+        {/*    <Form.Label>Listing Price</Form.Label>*/}
+        {/*    <Form.Control type="text"*/}
+        {/*                  placeholder="Enter selling price"*/}
+        {/*                  for={this.state.newProperty.listing_price}*/}
+        {/*                  name={"listing_price"}*/}
+        {/*                  onChange={this.handleSelectCurrencyTypeChange}/>*/}
+        {/*  </Form.Group>*/}
+
+        {/*  <Form.Group as={Col} controlId="formGridCurrencyType">*/}
+        {/*    <Form.Label>Currency</Form.Label>*/}
+        {/*    <Form.Control as="select"*/}
+        {/*                  value={this.state.newProperty.listing_currency}*/}
+        {/*                  defaultValue="usd"*/}
+        {/*                  name={"listing_currency"}*/}
+        {/*                  onChange={this.handleSelectCurrencyTypeChange}*/}
+        {/*                  >*/}
+        {/*      <option value={"usd"}>USD</option>*/}
+        {/*      <option value={"hrv"}>HRV</option>*/}
+        {/*      <option value={"eur"}>EUR</option>*/}
+        {/*    </Form.Control>*/}
+        {/*  </Form.Group>*/}
+        {/*</Form.Row>*/}
+
+
+        {/*<Form.Row>*/}
+        {/*  <Form.Group as={Col} controlId="formGridCity">*/}
+        {/*    <Form.Label>City</Form.Label>*/}
+        {/*    <Form.Control/>*/}
+        {/*  </Form.Group>*/}
+
+        {/*  <Form.Group as={Col} controlId="formGridCountry">*/}
+        {/*    <Form.Label>State</Form.Label>*/}
+        {/*    <Form.Control as="select">*/}
+        {/*      <option>Choose...</option>*/}
+        {/*      <option>...</option>*/}
+        {/*    </Form.Control>*/}
+        {/*  </Form.Group>*/}
+
+        {/*  <Form.Group as={Col} controlId="formGridZip">*/}
+        {/*    <Form.Label>Zip</Form.Label>*/}
+        {/*    <Form.Control/>*/}
+        {/*  </Form.Group>*/}
+        {/*</Form.Row>*/}
+
+        {/*<Form.Group>*/}
+        {/*  <Form.Check*/}
+        {/*    required*/}
+        {/*    label="Agree to terms and conditions"*/}
+        {/*    feedback="You must agree before submitting."*/}
+        {/*  />*/}
+        {/*</Form.Group>*/}
+
+        {/*    <Button variant="primary" type="submit">*/}
+        {/*      Submit*/}
+        {/*    </Button>*/}
+        {/*  </Form>*/}
+        {/*</Container>*/}
       </Style>
     );
   }
