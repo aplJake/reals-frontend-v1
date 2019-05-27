@@ -78,8 +78,8 @@ class PropertyForm extends React.Component {
         addresses: {
           street_name: "",
           street_number: "",
-          city_name: "",
-          country_name: "",
+          city_id: "",
+          country_id: "",
         }
       }
     }
@@ -121,16 +121,16 @@ class PropertyForm extends React.Component {
   handleInputCountry = (e) => {
     this.handlerInputAddress(e);
 
-    var country = this.state.countryList.find(country => country.country_name === e.target.value);
+    // var country = this.state.countryList.find(country => country.country_name === e.target.value);
 
     this.setState({
-      choosedCountryId: country.country_id,
+      choosedCountryId: e.target.value,
     }, () => {
       this.getCitiesByCountry();
     });
 
 
-    console.log("event", country);
+    // console.log("event", country);
   };
 
   handlerInputAddress = (e) => {
@@ -211,7 +211,7 @@ class PropertyForm extends React.Component {
           ...prevState.newProperty,
           addresses: {
             ...prevState.newProperty.addresses,
-            country_name: countries[0].country_name,
+            country_id: countries[0].country_id,
           }
         }
       })
@@ -232,7 +232,7 @@ class PropertyForm extends React.Component {
           ...prevState.newProperty,
           addresses: {
             ...prevState.newProperty.addresses,
-            city_name: cities[0].city_name,
+            city_id: cities[0].city_id,
           }
         }
       })
@@ -248,7 +248,7 @@ class PropertyForm extends React.Component {
     if (this.state.countryList.length > 0) {
       countryOptions = this.state.countryList.map((country) =>
         <option key={country.country_id}
-                value={country.country_name}>
+                value={country.country_id}>
           {country.country_name}
         </option>
       )
@@ -258,7 +258,7 @@ class PropertyForm extends React.Component {
       cityOptions = this.state.cityList.map((city) =>
         <option key={city.city_id}
                 id={city.city_id}
-                value={city.city_name}>
+                value={city.city_id}>
           {city.city_name}
         </option>
       )
@@ -406,9 +406,9 @@ class PropertyForm extends React.Component {
                 <Form.Label column sm={3}>Country</Form.Label>
                 <Col sm={5}>
                   <Form.Control as="select"
-                                value={this.state.newProperty.addresses.country_name}
+                                value={this.state.newProperty.addresses.country_id}
                                 defaultValue={this.state.countryList[0]}
-                                name={"country_name"}
+                                name={"country_id"}
                                 onChange={this.handleInputCountry}
                   >
                     {countryOptions}
@@ -416,9 +416,9 @@ class PropertyForm extends React.Component {
                 </Col>
                 <Col sm={4}>
                   <Form.Control as="select"
-                                value={this.state.newProperty.addresses.city_name}
+                                value={this.state.newProperty.addresses.city_id}
                                 defaultValue={this.state.cityList[0]}
-                                name={"city_name"}
+                                name={"city_id"}
                                 onChange={this.handlerInputAddress}
                   >
                     {cityOptions}
