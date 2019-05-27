@@ -53,7 +53,7 @@ export default class UserProfileForm extends Component {
   render() {
     return (
       <Row>
-      <Col md="9">
+      <Col md="10" sm={"10"}>
         <form
         >
           <FormGroup controlId="profile_description">
@@ -67,7 +67,7 @@ export default class UserProfileForm extends Component {
           </FormGroup>
         </form>
       </Col>
-      <Col className="to-right">
+      <Col md="2" sm={"2"} className="to-right">
         <Button
           type="submit"
           onClick={this.submitForm}

@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import requireAuth from "../requireAuth";
 import decode from "jwt-decode";
 import axios from "axios";
 import UserProfileForm from "./components/UserProfileForm";
-import { Container, Col, Button, Row, Jumbotron } from "react-bootstrap";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
 
@@ -45,97 +45,59 @@ const ListingItemStyle = styled.div`
     color: #333333;
   }
 `;
-const ListingItem = ({ listingData }) => (
-  <ListingItemStyle>
-    <div className="listing-wrapper">
-      <Row className="h-listing-name">
-        <Col md="10">
-          <h5>Listing long description text about the apratment</h5>
+
+const ListingItem = ({listingDescription, price, currency, createdAt, updatedAt, removeOnClick}) => (
+  <SSectionListing>
+    <Container>
+      <Row>
+        <Col sm="10">
+          <SSectinHeaderWrapper>
+            <SSectionH5>{listingDescription}</SSectionH5>
+          </SSectinHeaderWrapper>
         </Col>
-        <Col className="h-listing-price to-right">
-          <h4 className="to-right">$2500</h4>
-        </Col>
-      </Row>
-      <Row className="h-listing-name">
-        <Col>
-          <span className="h-listing-facilities">2bd</span>
-          <span className="h-listing-facilities">Bathroom</span>
-          <span className="h-listing-facilities">TV</span>
+        <Col sm="2" className="to-right">
+          <SSectinHeaderWrapper>
+            <SSectionH5>{price} {currency}</SSectionH5>
+          </SSectinHeaderWrapper>
         </Col>
       </Row>
-      <Row className="h-listing-name">
-        <Col md="10">
-          <h6>Added: 25-08-2018</h6>
+      <Row>
+        <Col sm={"10"}>
+          <Row>
+            <Col><h6 className={"tiny-description"}>{new Date(createdAt).toDateString()}</h6></Col>
+          </Row>
+          <Row>
+            <Col><h6 className={"tiny-description"}>{new Date(updatedAt).toDateString()}</h6></Col>
+          </Row>
         </Col>
-        <Col className="to-right">
-          <Button className="to-right" variant="outline-dark">
-            Remove
-          </Button>
+        <Col sm={"2"}>
+          <Link to="/property/new">
+            <Button variant="primary"
+                    onClick={removeOnClick}>
+              Remove listing
+            </Button>
+          </Link>
         </Col>
       </Row>
-    </div>
-  </ListingItemStyle>
+    </Container>
+  </SSectionListing>
 );
 
 class ProfileAdsListing extends Component {
   render() {
     return (
       <Container>
-        <ListingItem />
-        <ListingItem />
-        <ListingItem />
+        <ListingItem/>
+        <ListingItem/>
+        <ListingItem/>
       </Container>
     );
   }
 }
 
-const Style = styled.div`
-  h5 {
-    margin: 0;
-    padding: 0;
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  p {
-    font-size: 16px;
-    color: #404040;
-  }
-
-  hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 15px;
-    margin-right: 15px;
-  }
-
-  .btn {
-    margin: 2px 5px;
-    padding: 3px 9px;
-    font-size: 16px;
-  }
-
-  .to-right {
-    float: right;
-  }
-
-  .col-md-2 {
-    padding-right: 0;
-  }
-
-  .row {
-    margin-right: 0;
-    margin-left: 0;
-  }
-
-  .profile-name {
-    padding: 40px 15px;
-  }
-`;
-
 const SPageBase = styled.div`
   background: #f6f6f6;
-`
+`;
 const SSection = styled.div`
   min-height: 100px;
   background: white;
@@ -150,15 +112,32 @@ const SSection = styled.div`
   button {
     width: 180px;
   }
-`
+  
+  .tiny-description {
+    font-size: 13px;
+    font-weight: 300;
+  }
+  
+`;
+
+const SSectionZMargin = styled(SSection)`
+  margin-bottom: 0;
+`;
+const SSectionListing = styled(SSectionZMargin)`
+  border-bottom: 1px solid #bbbbbb;
+`;
 
 const SSectinHeaderWrapper = styled.div`
     padding: 20px 20px 20px 0;
 
-`
+`;
 const SSectionH4 = styled.h4`
   font-weight: 400;
-`
+`;
+
+const SSectionH5 = styled.h5`
+  font-weight: 400;
+`;
 
 class UserProfile extends Component {
   constructor(props) {
@@ -171,12 +150,13 @@ class UserProfile extends Component {
         profileDescription: "",
         createdAt: "",
         updatedAt: ""
-      }
+      },
+      profileListings: [],
     };
   }
 
   componentWillMount() {
-    const { auth } = this.props;
+    const {auth} = this.props;
 
     // Decode JWT data and get User Id
     let token = decode(auth);
@@ -184,8 +164,8 @@ class UserProfile extends Component {
       userId: token.UserId
     });
 
-    console.log("User JWT Token", token)
-    console.log("User data from the profile", token)
+    console.log("User JWT Token", token);
+    console.log("User data from the profile", token);
 
 
     axios
@@ -201,7 +181,8 @@ class UserProfile extends Component {
             profileDescription: response.data.profile.profile_description,
             createdAt: response.data.profile.created_at,
             updatedAt: response.data.profile.updated_at
-          }
+          },
+          profileListings: response.data.listings,
         });
       })
       .catch(error => console.log(error));
@@ -231,10 +212,10 @@ class UserProfile extends Component {
 
   handleFormClose = value => {
     if (value) {
-      this.setState({ isEditing: value });
+      this.setState({isEditing: value});
     } else {
       this.setState(prevState => {
-        return { isEditing: !prevState.isEditing };
+        return {isEditing: !prevState.isEditing};
       });
     }
   };
@@ -269,11 +250,14 @@ class UserProfile extends Component {
 
   handleAddProperty = () => {
 
-  }
+  };
 
   render() {
+    console.log("Profile listings ", this.state.profileListings);
     console.log("Length", this.state.userProfile.profileDescription.length);
     let descriptionPart;
+    let listings;
+
     if (this.state.userProfile.profileDescription.length == 0) {
       descriptionPart = (
         <p>
@@ -282,6 +266,18 @@ class UserProfile extends Component {
       );
     } else {
       descriptionPart = <p>{this.state.userProfile.profileDescription}</p>;
+    }
+
+    if (this.state.profileListings.length > 0) {
+      listings = this.state.profileListings.map((l) =>
+        <ListingItem key={l.property_id}
+                     listingDescription={l.listing_description}
+                     price={l.listing_price}
+                     currency={l.listing_currency}
+                     createdAt={l.created_at}
+                     updatedAt={l.updated_at}
+        />
+      )
     }
 
     return (
@@ -302,36 +298,36 @@ class UserProfile extends Component {
                 </SSectinHeaderWrapper>
               </Col>
             </Row>
-              {this.state.isEditing ? (
-                <UserProfileForm
-                  currentProfile={this.state.userProfile}
-                  handleFormClose={this.handleFormClose}
-                  updateDescription={this.updateDescription}
-                />
-              ) : (
-                <Row>
-                  <Col md="10">{descriptionPart}</Col>
-                  <Col md="2" className="to-right">
-                    <Button
-                      onClick={() => this.handleFormClose(true)}
-                      className="to-right"
-                    >
-                      Change
-                    </Button>
-                  </Col>
-                </Row>
-              )}
+            {this.state.isEditing ? (
+              <UserProfileForm
+                currentProfile={this.state.userProfile}
+                handleFormClose={this.handleFormClose}
+                updateDescription={this.updateDescription}
+              />
+            ) : (
+              <Row>
+                <Col md="10" sm={"10"}>{descriptionPart}</Col>
+                <Col md="2" sm={"2"} className="to-right">
+                  <Button
+                    onClick={() => this.handleFormClose(true)}
+                    className="to-right"
+                  >
+                    Change
+                  </Button>
+                </Col>
+              </Row>
+            )}
           </Container>
         </SSection>
-        <SSection>
+        <SSectionZMargin>
           <Container>
             <Row>
-              <Col md="10">
+              <Col md="10" sm="10">
                 <SSectinHeaderWrapper>
                   <SSectionH4>Added listings</SSectionH4>
                 </SSectinHeaderWrapper>
               </Col>
-              <Col md="2" className="to-right">
+              <Col md="2" sm="2" className="to-right">
                 <SSectinHeaderWrapper>
                   <Link to="/property/new">
                     <Button variant="primary"
@@ -344,7 +340,11 @@ class UserProfile extends Component {
             </Row>
 
           </Container>
-        </SSection>
+        </SSectionZMargin>
+
+        {/*  Listings*/}
+        {listings}
+        {/*  Lisitings ending*/}
       </SPageBase>
 
     );
@@ -352,40 +352,71 @@ class UserProfile extends Component {
 }
 
 
-{/*<Container>*/}
-{/*  <Style>*/}
-{/*    <Col>*/}
-{/*      <Jumbotron className="profile-name">*/}
-{/*        <h3>{this.state.userName}</h3>*/}
-{/*      </Jumbotron>*/}
-{/*    </Col>*/}
-{/*    <hr />*/}
-{/*    <Col>*/}
-{/*      <h4>Profile Description</h4>*/}
-{/*    </Col>*/}
+{/*<Container>*/
+}
+{/*  <Style>*/
+}
+{/*    <Col>*/
+}
+{/*      <Jumbotron className="profile-name">*/
+}
+{/*        <h3>{this.state.userName}</h3>*/
+}
+{/*      </Jumbotron>*/
+}
+{/*    </Col>*/
+}
+{/*    <hr />*/
+}
+{/*    <Col>*/
+}
+{/*      <h4>Profile Description</h4>*/
+}
+{/*    </Col>*/
+}
 
 
-{/*    <Row>*/}
-{/*      <Col md="10">*/}
-{/*        <h4>Your listings</h4>*/}
-{/*      </Col>*/}
-{/*      <Col className="to-right">*/}
-{/*        <Link to="/property/new">*/}
-{/*          <Button variant="primary"*/}
-{/*                  onClick={this.handleAddProperty}>*/}
-{/*            Add Property*/}
-{/*          </Button>*/}
-{/*        </Link>*/}
-{/*      </Col>*/}
-{/*    </Row>*/}
-{/*    <Row>*/}
-{/*      <Col><hr/></Col>*/}
-{/*    </Row>*/}
+{/*    <Row>*/
+}
+{/*      <Col md="10">*/
+}
+{/*        <h4>Your listings</h4>*/
+}
+{/*      </Col>*/
+}
+{/*      <Col className="to-right">*/
+}
+{/*        <Link to="/property/new">*/
+}
+{/*          <Button variant="primary"*/
+}
+{/*                  onClick={this.handleAddProperty}>*/
+}
+{/*            Add Property*/
+}
+{/*          </Button>*/
+}
+{/*        </Link>*/
+}
+{/*      </Col>*/
+}
+{/*    </Row>*/
+}
+{/*    <Row>*/
+}
+{/*      <Col><hr/></Col>*/
+}
+{/*    </Row>*/
+}
 
-{/*    <ProfileAdsListing />*/}
-{/*    <Row />*/}
-{/*  </Style>*/}
-{/*</Container>*/}
+{/*    <ProfileAdsListing />*/
+}
+{/*    <Row />*/
+}
+{/*  </Style>*/
+}
+{/*</Container>*/
+}
 
 // function mapStateToProps(state) {
 //   return { loggedUser: state.auth };
