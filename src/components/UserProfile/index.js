@@ -289,7 +289,7 @@ class UserProfile extends Component {
         <SSection>
           <Container>
             <SSectinHeaderWrapper>
-              <SSectionH4>Username</SSectionH4>
+              <SSectionH4>{this.state.userName}</SSectionH4>
             </SSectinHeaderWrapper>
           </Container>
         </SSection>
