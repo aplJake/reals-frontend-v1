@@ -80,22 +80,74 @@ class PropertyForm extends React.Component {
           street_number: "",
           city_name: "",
           country_name: "",
-          country_code: "",
         }
       }
     }
   }
 
   handleSelectPropTypeChange = e => {
-    e.preventDefault();
-    let {newProperty} = {...this.state};
-    let currentPropertyState = newProperty;
+    // let value = e.target.value;
+    // let name = e.target.name;
+    // e.preventDefault();
+    // let {newProperty} = {...this.state};
+    // let currentPropertyState = newProperty;
     const {name, value} = e.target;
-
-    currentPropertyState[name] = value;
-
+    //
+    // currentPropertyState[name] = value;
+    this.setState({
+      newProperty: {
+        ...this.state.newProperty,
+        value: name,
+      }
+    });
     console.log("Name", name, "Value", value);
     console.log(this.state)
+  };
+
+  handleInput = (e) => {
+    let value = e.target.value;
+    let name = e.target.name;
+    this.setState(
+      prevState => ({
+        newProperty: {
+          ...prevState.newProperty,
+          [name]: value
+        }
+      }),
+      () => console.log(this.state.newProperty)
+    );
+  };
+
+  handleInputCountry = (e) => {
+    this.handlerInputAddress(e);
+
+    var country = this.state.countryList.find(country => country.country_name === e.target.value);
+
+    this.setState({
+      choosedCountryId: country.country_id,
+    }, () => {
+      this.getCitiesByCountry();
+    });
+
+
+    console.log("event", country);
+  };
+
+  handlerInputAddress = (e) => {
+    let value = e.target.value;
+    let name = e.target.name;
+    this.setState(
+      prevState => ({
+        newProperty: {
+          ...prevState.newProperty,
+          addresses: {
+            ...prevState.newProperty.addresses,
+            [name]: value,
+          }
+        }
+      }),
+      () => console.log(this.state.newProperty)
+    );
   };
 
   // Listing (FOR CURRENCY TYPE)
@@ -144,8 +196,6 @@ class PropertyForm extends React.Component {
     this.getCountries();
     // GET REQUEST FOR ALL CITIES DATA
     this.getCitiesByCountry();
-
-
   }
 
   getCountries = async () => {
@@ -153,22 +203,42 @@ class PropertyForm extends React.Component {
     let countries = await response.data.countries;
     this.setState({
       countryList: countries,
-    })
+    });
+
+    this.setState(
+      prevState => ({
+        newProperty: {
+          ...prevState.newProperty,
+          addresses: {
+            ...prevState.newProperty.addresses,
+            country_name: countries[0].country_name,
+          }
+        }
+      })
+    );
     console.log("List c", this.state.countryList);
   };
 
   getCitiesByCountry = async () => {
-    await Axios
-      .get(`http://localhost:2308/api/countries/${this.state.choosedCountryId}/cities`)
-      .then(response => {
-        this.setState({
-          cityList: response.data.cities
-        })
-      })
-      .catch(error => console.log(error));
-    console.log("cities are", this.state.cityList)
-  };
+    const response = await Axios.get(`http://localhost:2308/api/countries/${this.state.choosedCountryId}/cities`);
+    let cities = await response.data.cities;
+    this.setState({
+      cityList: response.data.cities
+    })
 
+    this.setState(
+      prevState => ({
+        newProperty: {
+          ...prevState.newProperty,
+          addresses: {
+            ...prevState.newProperty.addresses,
+            city_name: cities[0].city_name,
+          }
+        }
+      })
+    );
+    console.log("cities are", this.state.cityList);
+  };
 
   render() {
     console.log("Countries render", this.state.countryList);
@@ -187,6 +257,7 @@ class PropertyForm extends React.Component {
     if (this.state.choosedCountryId != null && this.state.cityList.length > 0) {
       cityOptions = this.state.cityList.map((city) =>
         <option key={city.city_id}
+                id={city.city_id}
                 value={city.city_name}>
           {city.city_name}
         </option>
@@ -210,9 +281,9 @@ class PropertyForm extends React.Component {
                     as="select"
                     value={this.state.newProperty.construction_type}
                     name={"construction_type"}
-                    onChange={this.handleSelectPropTypeChange}
+                    onChange={this.handleInput}
                   >
-                    <option defaultValue="apartment">Apartment</option>
+                    <option value="apartment">Apartment</option>
                     <option value="house">House</option>
                   </Form.Control>
                 </Col>
@@ -225,7 +296,7 @@ class PropertyForm extends React.Component {
                                 placeholder="Property area"
                                 for={this.state.newProperty.area}
                                 name={"area"}
-                                onChange={this.handleSelectPropTypeChange}/>
+                                onChange={this.handleInput}/>
                 </Col>
               </Form.Group>
 
@@ -237,14 +308,14 @@ class PropertyForm extends React.Component {
                                 placeholder="Room number"
                                 for={this.state.newProperty.room_number}
                                 name={"room_number"}
-                                onChange={this.handleSelectPropTypeChange}/>
+                                onChange={this.handleInput}/>
                 </Col>
                 <Col sm={4}>
                   <Form.Control type="text"
                                 placeholder="Bathroom number"
                                 for={this.state.newProperty.bathroom_number}
                                 name={"bathroom_number"}
-                                onChange={this.handleSelectPropTypeChange}/>
+                                onChange={this.handleInput}/>
                 </Col>
               </Form.Group>
 
@@ -256,14 +327,14 @@ class PropertyForm extends React.Component {
                                 placeholder="Max floor"
                                 for={this.state.newProperty.max_floor_number}
                                 name={"max_floor_number"}
-                                onChange={this.handleSelectPropTypeChange}/>
+                                onChange={this.handleInput}/>
                 </Col>
                 <Col sm={4}>
                   <Form.Control type="text"
                                 placeholder="Property floor"
                                 for={this.state.newProperty.property_floor_number}
                                 name={"property_floor_number"}
-                                onChange={this.handleSelectPropTypeChange}/>
+                                onChange={this.handleInput}/>
                 </Col>
               </Form.Group>
 
@@ -275,7 +346,7 @@ class PropertyForm extends React.Component {
                     as="select"
                     value={this.state.newProperty.kids_allowed}
                     name={"kids_allowed"}
-                    onChange={this.handleSelectPropTypeChange}
+                    onChange={this.handleInput}
                   >
                     <option value={true}>Are allowed</option>
                     <option value={false}>Are not allowed</option>
@@ -286,7 +357,7 @@ class PropertyForm extends React.Component {
                     as="select"
                     value={this.state.newProperty.pets_allowed}
                     name={"pets_allowed"}
-                    onChange={this.handleSelectPropTypeChange}
+                    onChange={this.handleInput}
                   >
                     <option value={true}>Are allowed</option>
                     <option value={false}>Are not allowed</option>
@@ -302,7 +373,7 @@ class PropertyForm extends React.Component {
                                 placeholder="Describe your property"
                                 for={this.state.newProperty.listing_description}
                                 name={"listing_description"}
-                                onChange={this.handleSelectCurrencyTypeChange}/>
+                                onChange={this.handleInput}/>
                 </Col>
               </Form.Group>
 
@@ -314,14 +385,14 @@ class PropertyForm extends React.Component {
                                 placeholder="Enter selling price"
                                 for={this.state.newProperty.listing_price}
                                 name={"listing_price"}
-                                onChange={this.handleSelectCurrencyTypeChange}/>
+                                onChange={this.handleInput}/>
                 </Col>
                 <Col sm={4}>
                   <Form.Control as="select"
                                 value={this.state.newProperty.listing_currency}
                                 defaultValue="usd"
                                 name={"listing_currency"}
-                                onChange={this.handleSelectCurrencyTypeChange}
+                                onChange={this.handleInput}
                   >
                     <option value={"usd"}>USD</option>
                     <option value={"hrv"}>HRV</option>
@@ -331,30 +402,49 @@ class PropertyForm extends React.Component {
               </Form.Group>
 
               {/* COUNTRY */}
-              {/* TODO: add the form control*/}
               <Form.Group as={Row} md={3}>
                 <Form.Label column sm={3}>Country</Form.Label>
                 <Col sm={5}>
                   <Form.Control as="select"
                                 value={this.state.newProperty.addresses.country_name}
                                 defaultValue={this.state.countryList[0]}
-                                name={"listing_currency"}
-                                onChange={this.handleSelectCurrencyTypeChange}
+                                name={"country_name"}
+                                onChange={this.handleInputCountry}
                   >
                     {countryOptions}
                   </Form.Control>
                 </Col>
                 <Col sm={4}>
                   <Form.Control as="select"
-                                value={this.state.newProperty.listing_currency}
+                                value={this.state.newProperty.addresses.city_name}
                                 defaultValue={this.state.cityList[0]}
-                                name={"listing_currency"}
-                                onChange={this.handleSelectCurrencyTypeChange}
+                                name={"city_name"}
+                                onChange={this.handlerInputAddress}
                   >
                     {cityOptions}
                   </Form.Control>
                 </Col>
               </Form.Group>
+
+              {/* ADDRESS*/}
+              <Form.Group as={Row} md={3}>
+                <Form.Label column sm={3}>Address</Form.Label>
+                <Col sm={5}>
+                  <Form.Control type="text"
+                                placeholder="Enter property address"
+                                for={this.state.newProperty.addresses.street_name}
+                                name={"street_name"}
+                                onChange={this.handlerInputAddress}/>
+                </Col>
+                <Col sm={4}>
+                  <Form.Control type="text"
+                                placeholder="Enter property building"
+                                for={this.state.newProperty.addresses.street_number}
+                                name={"street_number"}
+                                onChange={this.handlerInputAddress}/>
+                </Col>
+              </Form.Group>
+
 
               {/* SUMIT FORM */}
 
