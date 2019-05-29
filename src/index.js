@@ -10,7 +10,6 @@ import thunk from "redux-thunk";
 
 import reducers from "./reducers";
 import App from "./components/App";
-import Welcome from "./components/Welcome";
 import Signup from "./components/auth/Signup";
 import Signout from "./components/auth/Signout";
 import Signin from "./components/auth/Signin";
@@ -23,6 +22,7 @@ import AdminPage, {
 } from "./components/AdminPage";
 import UsersAdminInfo from "./components/AdminPage/UsersAdminInfo";
 import CountriesAdminInfo from "./components/AdminPage/CountriesAdminInfo";
+import HomePage from "./components/HomePage";
 
 const store = createStore(
   reducers,
@@ -36,7 +36,7 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <App>
-        <Route path="/" exact component={Welcome} />
+        <Route path="/" exact component={HomePage} />
         <Route path="/signup" component={Signup} />
         <Route path="/profile" component={UserProfile} />
         <Route path="/signout" component={Signout} />
