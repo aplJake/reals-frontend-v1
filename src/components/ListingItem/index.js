@@ -33,7 +33,7 @@ const SSectionZMargin = styled(SSection)`
   margin-bottom: 0;
 `;
 const SSectionListing = styled(SSectionZMargin)`
-  border-bottom: 1px solid #bbbbbb;
+  border-bottom: 1px solid #efefef;
 `;
 
 const SSectinHeaderWrapper = styled.div`
@@ -48,13 +48,13 @@ const SSectionH5 = styled.h5`
   font-weight: 400;
 `;
 
-const ListingItem = ({listingDescription, price, currency, createdAt, updatedAt, removeOnClick}) => (
+const ListingItem = ({listingId, listingDescription, price, currency, createdAt, updatedAt, removeOnClick}) => (
   <SSectionListing>
     <Container>
       <Row>
         <Col sm="10">
           <SSectinHeaderWrapper>
-            <Link to={"/property/id"}>{listingDescription}</Link>
+            <Link to={`/${listingId}`}>{listingDescription}</Link>
           </SSectinHeaderWrapper>
         </Col>
         <Col sm="2" className="to-right">

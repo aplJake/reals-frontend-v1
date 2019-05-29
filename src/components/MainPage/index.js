@@ -1,5 +1,5 @@
 import React from 'react';
-import Axios from "axios";
+import Axios from "axios/index";
 import ListingItem from "../ListingItem";
 import styled from "styled-components";
 
@@ -17,7 +17,7 @@ const StyledWrapper = styled.div`
 `;
 
 
-class HomePage extends React.Component {
+class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,30 +26,31 @@ class HomePage extends React.Component {
   }
 
   componentWillMount() {
+    let API_URL;
+    if(this.props.pageType == null) {
+      API_URL = `http://localhost:2308/api/pages/all-listings`;
+    } else if(this.props.pageType == "apartments") {
+      API_URL = `http://localhost:2308/api/pages/apartments`;
+    } else {
+      API_URL = `http://localhost:2308/api/pages/homes`;
+    }
     Axios
-      .get(`http://localhost:2308/api/all-listings`)
+      .get(API_URL)
       .then(response => {
         console.log(response);
 
         this.setState({
-          userName: response.data.profile.user_name,
-          userId: response.data.profile.user_id,
-          userProfile: {
-            // userName: response.data.profile.user_name,
-            profileDescription: response.data.profile.profile_description,
-            createdAt: response.data.profile.created_at,
-            updatedAt: response.data.profile.updated_at
-          },
-          profileListings: response.data.listings,
+          listings: response.data.listings,
         });
       })
       .catch(error => console.log(error));
   }
 
   renderListings = () => {
-    if (this.state.listings.length > 0) {
+    if (this.state.listings && this.state.listings.length > 0) {
       return this.state.listings.map((l) =>
         <ListingItem key={l.property_id}
+                     listingId={l.property_id}
                      listingDescription={l.listing_description}
                      price={l.listing_price}
                      currency={l.listing_currency}
@@ -70,4 +71,4 @@ class HomePage extends React.Component {
     )
   }
 }
-export default HomePage;
+export default MainPage;
