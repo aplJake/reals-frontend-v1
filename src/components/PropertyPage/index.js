@@ -4,6 +4,8 @@ import SideProfile from "./SideProfile";
 import PropertyQueue from "./PropertyQueue";
 import Axios from "axios";
 import styled from "styled-components";
+import requireAuth from "../requireAuth";
+import decode from "jwt-decode";
 
 const Style = styled.div`
   .prop-name {
@@ -141,6 +143,7 @@ class PropertyPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      userPayload: "",
       listingData: {
         property_listing: {
           property_id: "",
@@ -185,6 +188,14 @@ class PropertyPage extends React.Component {
   }
 
   componentWillMount() {
+    const {auth} = this.props;
+
+    // Decode JWT data and get User Id
+    let token = decode(auth);
+    this.setState({
+      userPayload: token
+    });
+
     const {id} = this.props.match.params;
     console.log("property id is", id);
 
@@ -205,19 +216,18 @@ class PropertyPage extends React.Component {
     return(
       <Container>
         <Row>
-          <Col sm={8} md={8}>
+          <Col sm={12} md={8}>
             <PropertyDescription
               listingData={this.state.listingData.property_listing}
               propertyData={this.state.listingData.property}
               streetData={this.state.listingData.address}
             />
           </Col>
-          <Col sm={2} md={2}>
+          <Col sm={12} md={4}>
             <Row>
-              <SideProfile />
-            </Row>
-            <Row>
-              <PropertyQueue />
+              <PropertyQueue
+                propertyID={this.props.match.params.id}
+                />
             </Row>
           </Col>
         </Row>
@@ -226,4 +236,4 @@ class PropertyPage extends React.Component {
   }
 }
 
-export default PropertyPage;
+export default requireAuth(PropertyPage);
