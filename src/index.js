@@ -42,13 +42,15 @@ ReactDOM.render(
         <Route path="/" exact component={HomePage} />
         <Route path="/apartments" component={ApartmentsPage} />
         <Route path="/homes" component={HomesPage} />
-        <Route path="/property" component={PropertyPage} />
+        <Route path="/property/:id"
+               component={PropertyPage}/>
 
         <Route path="/signup" component={Signup} />
-        <Route path="/profile" component={UserProfile} />
-        <Route path="/signout" component={Signout} />
         <Route path="/signin" component={Signin} />
+        <Route path="/signout" component={Signout} />
+        <Route path="/profile" component={UserProfile} />
         <Route path="/property/new" component={PropertyForm} />
+
         <Route path="/admin" component={AdminPage}/>
         <Route path="/admin/users" component={UsersAdminInfo}/>
         {/*<Route path="/admin/admins" component={}/>*/}
