@@ -39,23 +39,23 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <App>
-        <Route path="/" exact component={HomePage} />
-        <Route path="/apartments" component={ApartmentsPage} />
-        <Route path="/homes" component={HomesPage} />
-        <Route path="/property/:id"
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/apartments" component={ApartmentsPage} />
+        <Route exact path="/homes" component={HomesPage} />
+        <Route exact path="/listing/:id"
                component={PropertyPage}/>
 
-        <Route path="/signup" component={Signup} />
-        <Route path="/signin" component={Signin} />
-        <Route path="/signout" component={Signout} />
-        <Route path="/profile" component={UserProfile} />
-        <Route path="/property/new" component={PropertyForm} />
+        <Route exact path="/signup" component={Signup} />
+        <Route exact path="/signin" component={Signin} />
+        <Route exact path="/signout" component={Signout} />
+        <Route exact path="/profile" component={UserProfile} />
+        <Route exact path="/property/new" component={PropertyForm} />
 
-        <Route path="/admin" component={AdminPage}/>
-        <Route path="/admin/users" component={UsersAdminInfo}/>
+        <Route exact path="/admin" component={AdminPage}/>
+        <Route exact path="/admin/users" component={UsersAdminInfo}/>
         {/*<Route path="/admin/admins" component={}/>*/}
-        <Route path="/admin/countries" component={CountriesAdminInfo}/>
-        <Route path="/admin/listings" component={ListingsAdminInfo}/>
+        <Route exact path="/admin/countries" component={CountriesAdminInfo}/>
+        <Route exact path="/admin/listings" component={ListingsAdminInfo}/>
       </App>
     </BrowserRouter>
   </Provider>,

@@ -7,13 +7,13 @@ import styled from "styled-components";
 
 const Style = styled.div`
   .navbar-brand {
-    font-weight: 600;
+    font-weight: 500;
   }
 
   .navbar-light .navbar-nav .nav-link {
     color: black;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     margin: 0 5px;
   }
 
@@ -31,7 +31,7 @@ const Style = styled.div`
   }
   
   a {
-    font-weight: 500;
+    font-weight: 400;
   }
 `;
 

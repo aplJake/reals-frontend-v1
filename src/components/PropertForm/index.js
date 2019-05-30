@@ -74,7 +74,7 @@ class PropertyForm extends React.Component {
         listing_description: "",
         listing_price: "",
         listing_currency: "usd",
-        listing_is_active: true,
+        listing_is_active: "true",
         addresses: {
           street_name: "",
           street_number: "",
@@ -348,8 +348,8 @@ class PropertyForm extends React.Component {
                     name={"kids_allowed"}
                     onChange={this.handleInput}
                   >
-                    <option value={true}>Are allowed</option>
-                    <option value={false}>Are not allowed</option>
+                    <option value={"true"}>Are allowed</option>
+                    <option value={"false"}>Are not allowed</option>
                   </Form.Control>
                 </Col>
                 <Col sm={4}>
@@ -359,8 +359,8 @@ class PropertyForm extends React.Component {
                     name={"pets_allowed"}
                     onChange={this.handleInput}
                   >
-                    <option value={true}>Are allowed</option>
-                    <option value={false}>Are not allowed</option>
+                    <option value={"true"}>Are allowed</option>
+                    <option value={"false"}>Are not allowed</option>
                   </Form.Control>
                 </Col>
               </Form.Group>

@@ -237,7 +237,7 @@ class UserProfile extends Component {
 
 
   profileDescription = () => {
-    if (this.state.userProfile.profileDescription.length == 0) {
+    if (this.state.userProfile.profileDescription.length === 0) {
       return (
         <p>
           You can add profile description. It helps you to find new customers.
@@ -258,7 +258,7 @@ class UserProfile extends Component {
     let descriptionPart;
     let listings;
 
-    if (this.state.userProfile.profileDescription.length == 0) {
+    if (this.state.userProfile.profileDescription.length === 0) {
       descriptionPart = (
         <p>
           You can add profile description. It helps you to find new customers.
