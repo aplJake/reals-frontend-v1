@@ -54,7 +54,7 @@ const ListingItem = ({listingId, listingDescription, price, currency, createdAt,
       <Row>
         <Col sm="10">
           <SSectinHeaderWrapper>
-            <Link to={`/${listingId}`}>{listingDescription}</Link>
+            <Link to={`/property/${listingId}`}>{listingDescription}</Link>
           </SSectinHeaderWrapper>
         </Col>
         <Col sm="2" className="to-right">

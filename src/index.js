@@ -25,6 +25,7 @@ import CountriesAdminInfo from "./components/AdminPage/CountriesAdminInfo";
 import HomePage from "./components/MainPage";
 import ApartmentsPage from "./components/MainPage/ApartmentsPage";
 import HomesPage from "./components/MainPage/HomesPage";
+import PropertyPage from "./components/PropertyPage";
 
 const store = createStore(
   reducers,
@@ -41,6 +42,7 @@ ReactDOM.render(
         <Route path="/" exact component={HomePage} />
         <Route path="/apartments" component={ApartmentsPage} />
         <Route path="/homes" component={HomesPage} />
+        <Route path="/property" component={PropertyPage} />
 
         <Route path="/signup" component={Signup} />
         <Route path="/profile" component={UserProfile} />
