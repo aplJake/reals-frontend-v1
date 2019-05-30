@@ -35,7 +35,7 @@ const SContainer = styled.div`
   }
   .container {
     margin: 20px 10px;
-    padding: 0 20px 20px;
+    padding: 0 30px 30px;
     max-width: 300px;
     position: fixed;
     background: red;
@@ -52,9 +52,14 @@ class PropertyQueue extends React.Component {
     super(props);
     this.state = {
       isOpened: false,
-      queueData: {
-        profile: {},
-        queue: [],
+      profileData: {
+          queue: [],
+          profile: {
+            profile_description: {string: "", valid: ""},
+            telephone_number: {string: "", valid: ""},
+            user_name: "",
+            user_email: "",
+          }
       },
     }
   };
@@ -62,8 +67,9 @@ class PropertyQueue extends React.Component {
   handleButtonClick = () => {
     if(!this.state.isOpened) {
       this.setState({isOpened: true});
-    } else {
       this.getQueueData();
+    } else {
+      this.addNewUserToQueue();
     }
   };
 
@@ -74,13 +80,47 @@ class PropertyQueue extends React.Component {
         console.log(response);
 
         this.setState({
-          queueData: response.data.queue_data,
-        }, () => {console.log("queued data", this.state.queueData)});
+          profileData: response.data.property_queue_data,
+        }, () => {console.log("queued data", this.state.profileData)});
       })
       .catch(error => console.log(error));
+
+    // console.log("value", this.state.profileData.profile.profile_description.String)
+  };
+
+  addNewUserToQueue = () => {
+
+  }
+
+  renderProfileNullableData = () => {
+    if(this.state.isOpened && this.state.profileData.profile.user_name.length > 0) {
+      return (
+        <React.Fragment>
+          <Row>
+            <Col>{this.state.profileData.profile.telephone_number.string}</Col>
+          </Row>
+          <Row>
+            <Col>{this.state.profileData.profile.profile_description.string}</Col>
+          </Row>
+        </React.Fragment>
+      )
+    }
   };
 
   render() {
+    let queueProfile = null;
+    let queueMap;
+
+    if(this.state.isOpened && this.state.profileData.queue.length > 0) {
+      queueMap = this.state.profileData.queue.map((q) =>
+          <Row key={q.user_name}>
+            <Col md={4}><SSectionH5>{q.user_name}</SSectionH5></Col>
+            <Col md={8}><SSectionH5>{new Date(q.queue_time).toLocaleTimeString()}</SSectionH5></Col>
+          </Row>
+      )
+    }
+
+    let {user_name, user_email, telephone_number, profile_description} = this.state.profileData.profile;
     return (
       <Col>
         <SContainer>
@@ -91,9 +131,31 @@ class PropertyQueue extends React.Component {
               </SSectinWrapper>
             </Row>
             {this.state.isOpened && (
-              <Row>
-                <h4>Some hidden data</h4>
-              </Row>
+              <React.Fragment>
+                <Row>
+                  <Col>
+                    <Row>
+                      <Col md={4}><SSectionH5 className={"primary-h"}>Seller</SSectionH5></Col>
+                      <Col md={8}><SSectionH5>{user_name}</SSectionH5></Col>
+                    </Row>
+                    <Row>
+                      <Col md={4}><SSectionH5 className={"primary-h"}>Email</SSectionH5></Col>
+                      <Col md={8}><SSectionH5>{user_email}</SSectionH5></Col>
+                    </Row>
+                    {this.renderProfileNullableData}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <hr/>
+                    <Row>
+                      <Col md={4}><SSectionH5 className={"primary-h"}>Buyer</SSectionH5></Col>
+                      <Col md={8}><SSectionH5 className={"primary-h"}>Watch time</SSectionH5></Col>
+                    </Row>
+                    {queueMap}
+                  </Col>
+                </Row>
+              </React.Fragment>
             )}
             <Row>
               <Col sm={8} md={8} className={"btn-wrapper"}>
