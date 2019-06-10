@@ -51,8 +51,8 @@ export const AdminWrapper = ({children}) => (
     <SideNav>
       <Link to={`/admin/users`}>Users</Link>
       <Link to={`/admin/admins`}>Admins</Link>
-      <Link to={`/admin/listings`}>Listings</Link>
       <Link to={`/admin/countries`}>Countries</Link>
+      <Link to={`/admin/cities`}>Cities</Link>
     </SideNav>
     <MainSidebarContent>
       {children}

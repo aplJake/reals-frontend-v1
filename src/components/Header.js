@@ -6,6 +6,13 @@ import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import styled from "styled-components";
 
 const Style = styled.div`
+  .brand {
+    img {
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+  }
+
   .navbar-brand {
     font-weight: 500;
   }
@@ -92,6 +99,9 @@ class Header extends Component {
           <Container>
 
             <Link to="/">
+                <span className={"brand"}>
+                  <img src={"icon.png"}/>
+                </span>
               <Navbar.Brand>Reals</Navbar.Brand>
             </Link>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>

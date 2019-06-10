@@ -53,9 +53,9 @@ ReactDOM.render(
 
         <Route exact path="/admin" component={AdminPage}/>
         <Route exact path="/admin/users" component={UsersAdminInfo}/>
-        {/*<Route path="/admin/admins" component={}/>*/}
+        <Route exact path="/admin/admins" component={UsersAdminInfo}/>
         <Route exact path="/admin/countries" component={CountriesAdminInfo}/>
-        <Route exact path="/admin/listings" component={ListingsAdminInfo}/>
+        <Route exact path="/admin/cities" component={ListingsAdminInfo}/>
       </App>
     </BrowserRouter>
   </Provider>,
