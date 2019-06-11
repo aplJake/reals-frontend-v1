@@ -128,7 +128,7 @@ class CountriesAdminInfo extends React.Component {
     if(this.state.onEditMode) {
       console.log("on edit mode");
       Axios
-        .put(`http://localhost:2308/api/admin/${this.props.adminId}/listings`,
+        .put(`http://localhost:2308/api/countries`,
           jsonedCountry
         )
         .then(response => {
@@ -190,7 +190,8 @@ class CountriesAdminInfo extends React.Component {
               <th>ID</th>
               <th>Country</th>
               <th>Zip Code</th>
-              <th>Actions</th>
+              <th>Edit</th>
+              <th>Delete</th>
             </tr>
             </thead>
             <tbody>
@@ -222,30 +223,12 @@ const ListingTableItem = ({country, editCountryHandler, deleteCountryHandler}) =
     <td>{country.country_name}</td>
     <td>{country.country_code}</td>
     <td>
-      <Button onClick={() => editCountryHandler(country)}>Edit</Button>
-      <Button onClick={() => deleteCountryHandler(country.country_id)}>Remove</Button>
+      <Button className={"on-full-width"} onClick={() => editCountryHandler(country)}>Edit</Button>
+    </td>
+    <td>
+      <Button className={"on-full-width"} onClick={() => deleteCountryHandler(country.country_id)}>Delete</Button>
     </td>
   </tr>
 );
 
-// class ListingTableItem extends React.Component {
-//   constructor(props) {
-//     super(props);
-//
-//   }
-//
-//   render() {
-//     return(
-//       <tr>
-//         <td>{this.props.country.country_id}</td>
-//         <td>{this.props.country.country_name}</td>
-//         <td>{this.props.country.country_code}</td>
-//         <td>
-//           <Button onClick={() => this.props.editCountryHandler(this.props.country)}>Edit</Button>
-//           <Button onClick={() => this.props.deleteCountryHandler(this.props.country.country_id) }>Remove</Button>
-//         </td>
-//       </tr>
-//     )
-//   }
-// }
 export default requireAuth(CountriesAdminInfo);
