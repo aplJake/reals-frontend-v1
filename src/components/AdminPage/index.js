@@ -7,6 +7,8 @@ import styled from "styled-components";
 import {Button, Table} from "react-bootstrap";
 
 export const SideNav = styled.div`
+  padding-top: 80px;
+  padding-left: 80px;
   height: 100%;
   width: 200px;
   position: fixed;
@@ -15,20 +17,32 @@ export const SideNav = styled.div`
   left: 0;
   background-color: #f7f6f6;
   overflow-x: hidden;
-  padding-top: 60px;
   
   a {
-    padding: 8px 15px;
+    padding: 8px 15px 8px 0;
     // text-decoration: none;
     font-size: 16px;
     color: black;
     display: block;
   }
+ 
 `;
 
 export const MainSidebarContent = styled.div`
   margin-left: 200px;
   padding: 0 60px;
+  table {
+    margin-top: 30px;
+    tr, td, th {
+      padding: 5px;
+      font-size: 16px;
+    }
+    
+    button {
+      width: 100%;
+    }
+  }
+  
 `;
 
 

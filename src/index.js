@@ -26,6 +26,8 @@ import HomePage from "./components/MainPage";
 import ApartmentsPage from "./components/MainPage/ApartmentsPage";
 import HomesPage from "./components/MainPage/HomesPage";
 import PropertyPage from "./components/PropertyPage";
+import AdminsAdminInfo from "./components/AdminPage/AdminsAdminInfo";
+import CitiesAdminInfo from "./components/AdminPage/CitiesAdminInfo";
 
 const store = createStore(
   reducers,
@@ -53,9 +55,9 @@ ReactDOM.render(
 
         <Route exact path="/admin" component={AdminPage}/>
         <Route exact path="/admin/users" component={UsersAdminInfo}/>
-        <Route exact path="/admin/admins" component={UsersAdminInfo}/>
+        <Route exact path="/admin/admins" component={AdminsAdminInfo}/>
         <Route exact path="/admin/countries" component={CountriesAdminInfo}/>
-        <Route exact path="/admin/cities" component={ListingsAdminInfo}/>
+        <Route exact path="/admin/cities" component={CitiesAdminInfo}/>
       </App>
     </BrowserRouter>
   </Provider>,

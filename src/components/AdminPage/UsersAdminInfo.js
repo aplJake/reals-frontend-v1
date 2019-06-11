@@ -4,6 +4,11 @@ import Axios from "axios";
 import {Button, Table} from "react-bootstrap";
 import React from "react"
 import {AdminWrapper} from "./index";
+import styled from "styled-components";
+
+const SWarningMsg = styled.h5`
+  margin-top: 80px;
+`
 
 class UsersAdminInfo extends React.Component {
   constructor(props) {
@@ -28,8 +33,8 @@ class UsersAdminInfo extends React.Component {
         console.log(response);
         this.setState({
           ...this.state,
-          listings: response.data.listings,
-        })
+          users: response.data.users,
+        }, () => {console.log("User Admin info is ", this.state.users)})
       })
       .catch(error => console.log(error));
 
@@ -39,27 +44,35 @@ class UsersAdminInfo extends React.Component {
 
 
   render() {
-    return(
-      <AdminWrapper>
-        <Table responsive striped bordered hover>
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-            {this.state.listings.map(item => (
-              <UserTableItem key={item.user_id} user={item} adminId={this.state.tokenPayload.UserId} />
-            ))}
-          </tbody>
-        </Table>
+    if(this.state.users != null && this.state.users.length > 0) {
+      return(
+          <AdminWrapper>
+            <Table responsive striped bordered hover>
+              <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              {this.state.users.map(item => (
+                  <UserTableItem key={item.user_id} user={item} adminId={this.state.tokenPayload.UserId} />
+              ))}
+              </tbody>
+            </Table>
 
-      </AdminWrapper>
-    );
+          </AdminWrapper>
+      );
+    } else {
+      return (
+          <AdminWrapper>
+            <SWarningMsg>User info is empty</SWarningMsg>
+          </AdminWrapper>
+      )
+    }
+
   }
 };
 
@@ -86,7 +99,6 @@ class UserTableItem extends React.Component {
         <td>{this.props.user.user_id}</td>
         <td>{this.props.user.user_name}</td>
         <td>{this.props.user.email}</td>
-        <td>{this.props.user.password}</td>
         <td>
           <Button onClick={this.createAdminUserHandler}>Make Admin</Button>
         </td>

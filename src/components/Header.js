@@ -100,7 +100,7 @@ class Header extends Component {
 
             <Link to="/">
                 <span className={"brand"}>
-                  <img src={"icon.png"}/>
+                  <img src={"icon.png"} alt={""}/>
                 </span>
               <Navbar.Brand>Reals</Navbar.Brand>
             </Link>

@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, Fragment} from "react";
 import requireAuth from "../requireAuth";
 import decode from "jwt-decode";
 import axios from "axios";
@@ -151,22 +151,19 @@ class UserProfile extends Component {
         createdAt: "",
         updatedAt: ""
       },
+      tokenPayload: "",
       profileListings: [],
     };
   }
 
   componentWillMount() {
     const {auth} = this.props;
-
-    // Decode JWT data and get User Id
     let token = decode(auth);
     this.setState({
+      ...this.state,
+      tokenPayload: token,
       userId: token.UserId
     });
-
-    console.log("User JWT Token", token);
-    console.log("User data from the profile", token);
-
 
     axios
       .get(`http://localhost:2308/api/${token.UserId}`)
@@ -268,7 +265,7 @@ class UserProfile extends Component {
       descriptionPart = <p>{this.state.userProfile.profileDescription}</p>;
     }
 
-    if (this.state.profileListings.length > 0) {
+    if (!this.state.tokenPayload.IsAdmin && this.state.profileListings.length > 0) {
       listings = this.state.profileListings.map((l) =>
         <ListingItem key={l.property_id}
                      listingDescription={l.listing_description}
@@ -319,32 +316,46 @@ class UserProfile extends Component {
             )}
           </Container>
         </SSection>
-        <SSectionZMargin>
-          <Container>
-            <Row>
-              <Col md="10" sm="10">
-                <SSectinHeaderWrapper>
-                  <SSectionH4>Added listings</SSectionH4>
-                </SSectinHeaderWrapper>
-              </Col>
-              <Col md="2" sm="2" className="to-right">
-                <SSectinHeaderWrapper>
-                  <Link to="/property/new">
-                    <Button variant="primary"
-                            onClick={this.handleAddProperty}>
-                      Add Property
-                    </Button>
-                  </Link>
-                </SSectinHeaderWrapper>
-              </Col>
-            </Row>
+        <Fragment>
+          <SSectionZMargin>
+            <Container>
+              <Row>
+                <Col md="10" sm="10">
+                  <SSectinHeaderWrapper>
+                    {!this.state.tokenPayload.IsAdmin ? (
+                      <SSectionH4>Added listings</SSectionH4>
+                    ): (
+                      <SSectionH4>Admin Page</SSectionH4>
+                    )}
+                  </SSectinHeaderWrapper>
+                </Col>
+                <Col md="2" sm="2" className="to-right">
+                  <SSectinHeaderWrapper>
+                    {!this.state.tokenPayload.IsAdmin ? (
+                      <Link to="/property/new">
+                        <Button variant="primary"
+                                onClick={this.handleAddProperty}>
+                          Add Property
+                        </Button>
+                      </Link>
+                    ): (
+                      <Link to="/admin">
+                        <Button variant="primary">
+                          Admin Page
+                        </Button>
+                      </Link>
+                    )}
+                  </SSectinHeaderWrapper>
+                </Col>
+              </Row>
 
-          </Container>
-        </SSectionZMargin>
+            </Container>
+          </SSectionZMargin>
 
-        {/*  Listings*/}
-        {listings}
-        {/*  Lisitings ending*/}
+          {/*  Listings*/}
+          {listings}
+          {/*  Lisitings ending*/}
+        </Fragment>
       </SPageBase>
 
     );
