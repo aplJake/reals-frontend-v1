@@ -40,9 +40,9 @@ const FormExample = ({handlerSubmit}) => (
         errors,
       }) => (
       <Form noValidate onSubmit={e => {
-        e.preventDefault();
-        console.log("On submit form");
-        handlerSubmit(values.country_name, values.country_code);
+        // e.preventDefault();
+        console.log("On submit form", JSON.stringify(values, null, 2));
+        handlerSubmit(JSON.stringify(values, null, 2));
       }}>
         <Form.Row>
           <Form.Group as={Col} md="4" controlId="validationFormik03">
@@ -118,17 +118,15 @@ class CountriesAdminInfo extends React.Component {
     console.log("Result of API Get", this.state)
   }
 
-  handleCountryAddSubmit = ({country_name, country_code}) => {
-      Axios
-        .post(`http://localhost:2308/api/countries`,
-          {
-            country_name: country_name,
-            country_code: country_code
-          })
-        .then(response => {
-          console.log("Add new Country", response);
-        })
-        .catch(error => console.log(error));
+  handleCountryAddSubmit = (jsonedCountry) => {
+    console.log("Country to send", jsonedCountry);
+
+    Axios
+      .post(`http://localhost:2308/api/countries`, jsonedCountry)
+      .then(response => {
+        console.log("Add new Country", response);
+      })
+      .catch(error => console.log(error));
   };
 
   render() {
