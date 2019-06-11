@@ -100,7 +100,7 @@ class UserTableItem extends React.Component {
         <td>{this.props.user.user_name}</td>
         <td>{this.props.user.email}</td>
         <td>
-          <Button onClick={this.createAdminUserHandler}>Make Admin</Button>
+          <Button className={"on-full-width"} onClick={this.createAdminUserHandler}>Make Admin</Button>
         </td>
       </tr>
     )

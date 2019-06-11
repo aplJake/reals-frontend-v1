@@ -23,12 +23,12 @@ class CitiesAdminInfo extends React.Component {
         });
 
         Axios
-            .get(`http://localhost:2308/api/admin/${token.UserId}/users`)
+            .get(`http://localhost:2308/api/cities`)
             .then(response => {
                 console.log(response);
                 this.setState({
                     ...this.state,
-                    listings: response.data.listings,
+                    countries: response.data.countries,
                 })
             })
             .catch(error => console.log(error));
@@ -52,7 +52,7 @@ class CitiesAdminInfo extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.state.listings.map(item => (
+                    {this.state.countries.map(item => (
                         <UserTableItem key={item.user_id} user={item} adminId={this.state.tokenPayload.UserId} />
                     ))}
                     </tbody>

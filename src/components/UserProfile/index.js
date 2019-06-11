@@ -179,7 +179,7 @@ class UserProfile extends Component {
             createdAt: response.data.profile.created_at,
             updatedAt: response.data.profile.updated_at
           },
-          profileListings: response.data.listings,
+          profileListings: response.data.countries,
         });
       })
       .catch(error => console.log(error));
@@ -250,7 +250,7 @@ class UserProfile extends Component {
   };
 
   render() {
-    console.log("Profile listings ", this.state.profileListings);
+    console.log("Profile countries ", this.state.profileListings);
     console.log("Length", this.state.userProfile.profileDescription.length);
     let descriptionPart;
     let listings;
@@ -391,7 +391,7 @@ class UserProfile extends Component {
 }
 {/*      <Col md="10">*/
 }
-{/*        <h4>Your listings</h4>*/
+{/*        <h4>Your countries</h4>*/
 }
 {/*      </Col>*/
 }

@@ -39,7 +39,10 @@ export const MainSidebarContent = styled.div`
     }
     
     button {
-      width: 100%;
+      &.on-full-width {
+         width: 100%;
+      }
+      margin-right: 5px;
     }
   }
   
@@ -60,8 +63,11 @@ export const CountriesAdminInfo = ({props}) => (
   </AdminWrapper>
 );
 
+const WrapperDiv = styled.div`
+  margin-top: 80px;
+`
 export const AdminWrapper = ({children}) => (
-  <div>
+  <WrapperDiv>
     <SideNav>
       <Link to={`/admin/users`}>Users</Link>
       <Link to={`/admin/admins`}>Admins</Link>
@@ -71,7 +77,7 @@ export const AdminWrapper = ({children}) => (
     <MainSidebarContent>
       {children}
     </MainSidebarContent>
-  </div>
+  </WrapperDiv>
 );
 
 class AdminPage extends React.Component {

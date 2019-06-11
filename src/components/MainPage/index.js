@@ -40,15 +40,15 @@ class MainPage extends React.Component {
         console.log(response);
 
         this.setState({
-          listings: response.data.listings,
+          countries: response.data.countries,
         });
       })
       .catch(error => console.log(error));
   }
 
   renderListings = () => {
-    if (this.state.listings && this.state.listings.length > 0) {
-      return this.state.listings.map((l) =>
+    if (this.state.countries && this.state.countries.length > 0) {
+      return this.state.countries.map((l) =>
         <ListingItem key={l.property_id}
                      listingId={l.property_id}
                      listingDescription={l.listing_description}
