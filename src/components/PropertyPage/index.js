@@ -88,19 +88,6 @@ const PropertyDescription = ({listingData, propertyData, streetData}) => {
         <Row>
           <SSectionH5>{propertyData.property_floor_number}/{propertyData.max_floor_number} floor</SSectionH5>
         </Row>
-        <Row className="sectioned-row">
-          <SSectinWrapper>
-            <SSectionH4>Allows</SSectionH4>
-          </SSectinWrapper>
-        </Row>
-        <Row>
-          <Col md={2} className={"col"}>
-            <SSectionH5>With pets: {propertyData.pets_allowed ? "Yes" : "No"}</SSectionH5>
-          </Col>
-          <Col md={2} className={"col"}>
-            <SSectionH5>With kids: {propertyData.kids_allowed  ? "Yes" : "No"}</SSectionH5>
-          </Col>
-        </Row>
 
         <Row className="sectioned-row">
           <SSectinWrapper>

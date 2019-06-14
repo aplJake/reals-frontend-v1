@@ -90,7 +90,7 @@ class PropertyQueue extends React.Component {
 
   addNewUserToQueue = () => {
 
-  }
+  };
 
   renderProfileNullableData = () => {
     if(this.state.isOpened && this.state.profileData.profile.user_name.length > 0) {
@@ -111,7 +111,7 @@ class PropertyQueue extends React.Component {
     let queueProfile = null;
     let queueMap;
 
-    if(this.state.isOpened && this.state.profileData.queue.length > 0) {
+    if(this.state.isOpened && this.state.profileData.queue != null && this.state.profileData.queue.length > 0) {
       queueMap = this.state.profileData.queue.map((q) =>
           <Row key={q.user_name}>
             <Col md={4}><SSectionH5>{q.user_name}</SSectionH5></Col>

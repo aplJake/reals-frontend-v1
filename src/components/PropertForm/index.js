@@ -4,6 +4,8 @@ import styled from "styled-components";
 import Axios from "axios";
 import decode from "jwt-decode";
 import requireAuth from "../requireAuth";
+import {Formik,} from "formik";
+import * as Yup from "yup";
 
 const Style = styled.div`
   .prop-name {
@@ -11,9 +13,6 @@ const Style = styled.div`
   }
 `;
 
-const SPageBase = styled.div`
-  background: #f6f6f6;
-`;
 const SSection = styled.div`
   min-height: 100px;
   background: white;
@@ -38,21 +37,45 @@ const SSectionH4 = styled.h4`
   font-weight: 400;
 `;
 
-/*
-PropertyForm fields
-RoomNumber
-Construction Type   (list)
-KidsAllowed         (bool)
-PetsAllowed         (bool)
-Area
-BathroomNumber      (list)
-MaxFloorNumber
-PropertyFloor
 
-Listing Description
-ListingPrice
-ListingCurrency     (list)
- */
+
+const schema = Yup.object({
+  construction_type: Yup.string()
+    .default("apartment"),
+  area: Yup.number()
+    .max(10, 'Area should be less than 10 signs')
+    .required('Please specify the property area'),
+  room_number: Yup.number()
+    .max(4, 'Apartment with more that 4 rooms will be automatically added into special group "more than 4 db"')
+    .required("Please specify property room number"),
+  bathroom_number: Yup.number()
+    .max(20, 'Max number of bathrooms in apartment is 20')
+    .required("Please specify the number of bathrooms in your apartment"),
+  max_floor_number: Yup.number()
+    .max(4, 'Max number of integer signs is 4')
+    .required('Please specify max floor number'),
+  property_floor_number: Yup.number()
+    .max(4, 'Max number of integer signs is 4')
+    .required('Please specify max floor number'),
+  listing_description: Yup.string()
+    .max(200, 'Mux number of characters in the description is 200')
+    .required('Please specify the listing description'),
+  listing_price: Yup.number()
+    .max(11, 'Mux number of digits in the price is 11')
+    .required('Please specify the listing price of the prperty'),
+  listing_currency: Yup.string().default('usd'),
+  listing_is_active: Yup.bool().default(true),
+  street_name: Yup.string()
+    .min(4, 'Min name of the street is 4')
+    .max(150, 'Max number of the street is 150')
+    .required('Please specify property street'),
+  street_number: Yup.number()
+    .max(10, 'Max number of digits in the street number is 10')
+    .required('lease specify the street number'),
+  city_id: Yup.number(),
+  country_id: Yup.number(),
+});
+
 class PropertyForm extends React.Component {
   constructor(props) {
     super(props);
@@ -69,8 +92,6 @@ class PropertyForm extends React.Component {
         bathroom_number: "",
         max_floor_number: "",
         property_floor_number: "",
-        kids_allowed: false,
-        pets_allowed: false,
         listing_description: "",
         listing_price: "",
         listing_currency: "usd",
@@ -335,33 +356,6 @@ class PropertyForm extends React.Component {
                                 for={this.state.newProperty.property_floor_number}
                                 name={"property_floor_number"}
                                 onChange={this.handleInput}/>
-                </Col>
-              </Form.Group>
-
-              {/* KIDS AND PETS ALOOWED */}
-              <Form.Group as={Row} md={3}>
-                <Form.Label column sm={3}>Kids/Pets</Form.Label>
-                <Col sm={5}>
-                  <Form.Control
-                    as="select"
-                    value={this.state.newProperty.kids_allowed}
-                    name={"kids_allowed"}
-                    onChange={this.handleInput}
-                  >
-                    <option value={"true"}>Are allowed</option>
-                    <option value={"false"}>Are not allowed</option>
-                  </Form.Control>
-                </Col>
-                <Col sm={4}>
-                  <Form.Control
-                    as="select"
-                    value={this.state.newProperty.pets_allowed}
-                    name={"pets_allowed"}
-                    onChange={this.handleInput}
-                  >
-                    <option value={"true"}>Are allowed</option>
-                    <option value={"false"}>Are not allowed</option>
-                  </Form.Control>
                 </Col>
               </Form.Group>
 

@@ -40,7 +40,7 @@ class MainPage extends React.Component {
         console.log(response);
 
         this.setState({
-          countries: response.data.countries,
+          countries: response.data.listings,
         });
       })
       .catch(error => console.log(error));
