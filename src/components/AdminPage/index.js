@@ -151,7 +151,7 @@ class AdminPage extends React.Component {
   render() {
     const {pageAccess, tokenPayload} = this.state;
 
-    if(pageAccess, tokenPayload) {
+    if(pageAccess && tokenPayload) {
       return(
         <AdminWrapper adminUserType={tokenPayload.UserType}>
           {/*<SideNav>*/}
