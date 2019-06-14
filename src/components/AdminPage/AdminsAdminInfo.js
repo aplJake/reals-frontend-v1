@@ -44,9 +44,11 @@ class AdminsAdminInfo extends React.Component {
 
 
     render() {
-        if(this.state.users != null && this.state.users.length > 0) {
+        console.log("###################", this.state.tokenPayload.UserType);
+
+        if(this.state.users != null && this.state.users.length > 0 && this.state.tokenPayload.UserType == "SUPER_USER") {
             return(
-                <AdminWrapper>
+              <AdminWrapper adminUserType={this.state.tokenPayload.UserType}>
                     <Table responsive striped bordered hover>
                         <thead>
                         <tr>
@@ -67,7 +69,7 @@ class AdminsAdminInfo extends React.Component {
             );
         } else {
             return (
-                <AdminWrapper>
+                <AdminWrapper adminUserType={this.state.tokenPayload.UserType}>
                     <SWarningMsg>Admin info is empty</SWarningMsg>
                 </AdminWrapper>
             )

@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from "react"
+import React, {useState, useEffect, Fragment} from "react"
 import requireAuth from "../requireAuth";
 import Axios from "axios";
 import decode from "jwt-decode";
@@ -66,11 +66,15 @@ export const CountriesAdminInfo = ({props}) => (
 const WrapperDiv = styled.div`
   margin-top: 80px;
 `
-export const AdminWrapper = ({children}) => (
+export const AdminWrapper = ({children, adminUserType}) => (
   <WrapperDiv>
     <SideNav>
-      <Link to={`/admin/users`}>Users</Link>
-      <Link to={`/admin/admins`}>Admins</Link>
+      {adminUserType === 'SUPER_USER' && (
+        <Fragment>
+          <Link to={`/admin/users`}>Users</Link>
+          <Link to={`/admin/admins`}>Admins</Link>
+        </Fragment>
+      )}
       <Link to={`/admin/countries`}>Countries</Link>
       <Link to={`/admin/cities`}>Cities</Link>
     </SideNav>
@@ -86,6 +90,7 @@ class AdminPage extends React.Component {
     this.state = {
       pageAccess: false,
       userId: "",
+      tokenPayload: "",
     }
   }
 
@@ -97,6 +102,7 @@ class AdminPage extends React.Component {
 
     this.setState({
       userId: token.UserId,
+      tokenPayload: token,
       pageAccess: token.IsAdmin,
     });
 
@@ -108,18 +114,19 @@ class AdminPage extends React.Component {
         console.log("Token iss null")
       } else {
 
-        Axios
-          .get(`http://localhost:2308/api/admin/${token.UserId}`)
-          .then(response => {
-            console.log(response);
-            // if (this.isMounted()) {
-            //   this.setState({
-            //     userId: token.UserId,
-            //     pageAccess: token.IsAdmin,
-            //   })
-            // }
-          })
-          .catch(error => console.log(error));
+        // Axios
+        //   .get(`http://localhost:2308/api/admin/${token.UserId}`)
+        //   .then(response => {
+        //     console.log(response);
+        //     // if (this.isMounted()) {
+        //     //   this.setState({
+        //     //     userId: token.UserId,
+        //     //     pageAccess: token.IsAdmin,
+        //     //   })
+        //     // }
+        //   })
+        //   .catch(error => console.log(error));
+        console.log("Admin User:", token);
       }
 
     } else {
@@ -136,16 +143,17 @@ class AdminPage extends React.Component {
 
     this.setState({
       userId: token.UserId,
+      tokenPayload: token,
       pageAccess: token.IsAdmin,
     });
   };
 
   render() {
-    const {pageAccess} = this.state;
+    const {pageAccess, tokenPayload} = this.state;
 
-    if(pageAccess) {
+    if(pageAccess, tokenPayload) {
       return(
-        <AdminWrapper>
+        <AdminWrapper adminUserType={tokenPayload.UserType}>
           {/*<SideNav>*/}
           {/*  <Link to={`${this.props.match.url}/users`}>Users</Link>*/}
           {/*  <Link to={`${this.props.match.url}/listings`}>Listings</Link>*/}

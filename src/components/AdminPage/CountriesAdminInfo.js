@@ -173,7 +173,7 @@ class CountriesAdminInfo extends React.Component {
   render() {
     if (this.state.countries != null && this.state.countries.length > 0) {
       return (
-        <AdminWrapper>
+        <AdminWrapper adminUserType={this.state.tokenPayload.UserType}>
           {this.state.onEditMode ? (
             <Fragment>
               <h3>Edit mode</h3>
@@ -209,7 +209,7 @@ class CountriesAdminInfo extends React.Component {
       )
     } else {
       return (
-        <AdminWrapper>
+        <AdminWrapper adminUserType={this.state.tokenPayload.UserType}>
           <SWarningMsg>Countries info is empty</SWarningMsg>
         </AdminWrapper>
       )
