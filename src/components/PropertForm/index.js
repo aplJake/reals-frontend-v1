@@ -42,25 +42,66 @@ const SSectionH4 = styled.h4`
 const schema = Yup.object({
   construction_type: Yup.string()
     .default("apartment"),
-  area: Yup.number()
-    .max(10, 'Area should be less than 10 signs')
+  area: Yup.string()
+    .matches(
+      /^[0-9]*$/,
+      'This field should contain only numbers'
+    )
+    .max(9999999999, 'Area should be less than 10 digits')
     .required('Please specify the property area'),
-  room_number: Yup.number()
+  room_number: Yup.string()
+    .matches(
+      /^[0-9]*$/,
+      'This field should contain only numbers'
+    )
     .max(4, 'Apartment with more that 4 rooms will be automatically added into special group "more than 4 db"')
     .required("Please specify property room number"),
-  bathroom_number: Yup.number()
+  bathroom_number: Yup.string()
+    .matches(
+      /^[0-9]*$/,
+      'This field should contain only numbers'
+    )
     .max(20, 'Max number of bathrooms in apartment is 20')
     .required("Please specify the number of bathrooms in your apartment"),
-  max_floor_number: Yup.number()
-    .max(4, 'Max number of integer signs is 4')
+  max_floor_number: Yup.string()
+    .matches(
+      /^[0-9]*$/,
+      'This field should contain only numbers'
+    )
+    .max(9999, 'Max number of integer signs is 4')
     .required('Please specify max floor number'),
-  property_floor_number: Yup.number()
-    .max(4, 'Max number of integer signs is 4')
+  property_floor_number: Yup.string()
+    .test(
+      'Floor numbers matches',
+      'Max floor is greater than your property floor',
+      function(value) {
+        const {path, createError } = this;
+        let maxFloor = this.parent.max_floor_number;
+
+        if(value > maxFloor) {
+          return createError(path, "Message");
+        } else {
+          return true;
+        }
+    })
+    .matches(
+      /^[0-9]*$/,
+      'This field should contain only numbers'
+    )
+    .max(9999, 'Max number of digets is 4')
     .required('Please specify max floor number'),
   listing_description: Yup.string()
-    .max(200, 'Mux number of characters in the description is 200')
+    .matches(
+      /^[a-zA-Z \.-]*$/,
+      'Country name must contain only character letters'
+    )
+    .max(200, 'Max number of characters in the description is 200')
     .required('Please specify the listing description'),
-  listing_price: Yup.number()
+  listing_price: Yup.string()
+    .matches(
+      /^[0-9]*$/,
+      'This field should contain only numbers'
+    )
     .max(11, 'Mux number of digits in the price is 11')
     .required('Please specify the listing price of the prperty'),
   listing_currency: Yup.string().default('usd'),
@@ -69,8 +110,12 @@ const schema = Yup.object({
     .min(4, 'Min name of the street is 4')
     .max(150, 'Max number of the street is 150')
     .required('Please specify property street'),
-  street_number: Yup.number()
-    .max(10, 'Max number of digits in the street number is 10')
+  street_number: Yup.string()
+    .matches(
+      /^[0-9]*$/,
+      'This field should contain only numbers'
+    )
+    .max(9999999999, 'Max number of digits in the street number is 10')
     .required('lease specify the street number'),
   city_id: Yup.number(),
   country_id: Yup.number(),
@@ -261,6 +306,11 @@ class PropertyForm extends React.Component {
     console.log("cities are", this.state.cityList);
   };
 
+  formikFormSubmit = (propertyModel) => {
+    console.log("Property Model to add", propertyModel);
+
+  };
+
   render() {
     console.log("Countries render", this.state.countryList);
     let countryOptions;
@@ -292,6 +342,241 @@ class PropertyForm extends React.Component {
             <SSectinHeaderWrapper>
               <SSectionH4>New Listing</SSectionH4>
             </SSectinHeaderWrapper>
+            {/*Formik form*/}
+
+            <Formik
+              validationSchema={schema}
+              onSubmit={console.log}
+              initialValues={{
+                construction_type: "apartment",
+                listing_currency: "usd",
+                listing_is_active: "true",
+              }}
+            >
+              {({
+                handleChange,
+                values,
+                errors,
+              }) => (
+                <Form noValidate onSubmit={
+                  this.formikFormSubmit(JSON.stringify(values, null, 2))
+                }>
+
+                  {/* Construction type*/}
+                  <Form.Group as={Row} controlId="formGridConstructionType">
+                    <Form.Label column sm={3}>Type</Form.Label>
+                    <Col sm={9}>
+                      <Form.Control
+                        as="select"
+                        value={values.construction_type}
+                        name={"construction_type"}
+                        onChange={handleChange}
+                        isInvalid={!!errors.construction_type}
+                      >
+                        <option value="apartment">Apartment</option>
+                        <option value="house">House</option>
+                      </Form.Control>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.country_name}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  {/* Property Area*/}
+                  <Form.Group as={Row} controlId="formGridArea">
+                    <Form.Label column sm={3}>Area</Form.Label>
+                    <Col sm={9}>
+                      <Form.Control type="text"
+                                    placeholder="Property area"
+                                    name={"area"}
+                                    value={values.area}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.area}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.area}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  {/* Number of rooms in bedroom and bathroom */}
+                  <Form.Group as={Row} controlId="formGridRoomNumber">
+                    <Form.Label column sm={3}>Rooms</Form.Label>
+                    <Col sm={5}>
+                      <Form.Control type="text"
+                                    placeholder="Room number"
+                                    name={"room_number"}
+                                    value={values.room_number}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.room_number}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.room_number}
+                      </Form.Control.Feedback>
+                    </Col>
+                    <Col sm={4}>
+                      <Form.Control type="text"
+                                    placeholder="Bathroom number"
+                                    name={"bathroom_number"}
+                                    value={values.bathroom_number}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.bathroom_number}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.bathroom_number}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  {/* Floors number */}
+                  <Form.Group as={Row} controlId="formGridMaxFloor">
+                    <Form.Label column sm={3}>Floors</Form.Label>
+                    <Col sm={5}>
+                      <Form.Control type="text"
+                                    placeholder="Max floor"
+                                    name={"max_floor_number"}
+                                    value={values.max_floor_number}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.max_floor_number}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.max_floor_number}
+                      </Form.Control.Feedback>
+                    </Col>
+                    <Col sm={4}>
+                      <Form.Control type="text"
+                                    placeholder="Property floor"
+                                    name={"property_floor_number"}
+                                    value={values.property_floor_number}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.property_floor_number}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.property_floor_number}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  {/* Listing description */}
+                  <Form.Group as={Row} md={3}>
+                    <Form.Label column sm={3}>Listing Description</Form.Label>
+                    <Col sm={9}>
+                      <Form.Control type="text"
+                                    placeholder="Describe your property"
+                                    name={"listing_description"}
+                                    value={values.listing_description}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.listing_description}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.listing_description}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  {/* Listing price and currency */}
+                  <Form.Group as={Row} md={3}>
+                    <Form.Label column sm={3}>Listing Price</Form.Label>
+                    <Col sm={5}>
+                      <Form.Control type="text"
+                                    placeholder="Enter selling price"
+                                    name={"listing_price"}
+                                    value={values.listing_price}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.listing_price}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.listing_price}
+                      </Form.Control.Feedback>
+                    </Col>
+                    <Col sm={4}>
+                      <Form.Control as="select"
+                                    name={"listing_currency"}
+                                    value={values.listing_currency}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.listing_currency}
+                      >
+                        <option value={"usd"}>USD</option>
+                        <option value={"hrv"}>HRV</option>
+                        <option value={"eur"}>EUR</option>
+                      </Form.Control>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.listing_currency}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  <Form.Group as={Row} md={3}>
+                    <Form.Label column sm={3}>Country</Form.Label>
+                    <Col sm={5}>
+                      <Form.Control as="select"
+                                    name={"country_id"}
+                                    value={values.country_id}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.country_id}
+                      >
+                        {countryOptions}
+                      </Form.Control>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.country_id}
+                      </Form.Control.Feedback>
+                    </Col>
+                    <Col sm={4}>
+                      <Form.Control as="select"
+                                    name={"city_id"}
+                                    value={values.city_id}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.city_id}
+                      >
+                        {cityOptions}
+                      </Form.Control>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.city_id}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  {/* Adresses*/}
+                  <Form.Group as={Row} md={3}>
+                    <Form.Label column sm={3}>Address</Form.Label>
+                    <Col sm={5}>
+                      <Form.Control type="text"
+                                    placeholder="Enter property address"
+                                    name={"street_name"}
+                                    value={values.street_name}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.street_name}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.street_name}
+                      </Form.Control.Feedback>
+                    </Col>
+                    <Col sm={4}>
+                      <Form.Control type="text"
+                                    placeholder="Enter property building"
+                                    name={"street_number"}
+                                    value={values.street_number}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.street_number}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.street_number}
+                      </Form.Control.Feedback>
+                    </Col>
+                  </Form.Group>
+
+                  <Button type="submit">Add listings</Button>
+                </Form>
+                )}
+            </Formik>
+
+            {/* End of Formik form */}
+
+
+
+
+
+
 
             <Form onSubmit={this.onFormSubmit}>
 

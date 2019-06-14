@@ -67,7 +67,7 @@ class FormExample extends React.PureComponent {
                           placeholder="Country name"
                           name="country_id"
                           value={values.country_id}
-                          defaultalue={this.props.countryList[0]}
+                          defaultValue={this.props.countryList[0]}
                           onChange={handleChange}
                           isInvalid={!!errors.country_id}
                         >
