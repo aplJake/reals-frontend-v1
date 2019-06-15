@@ -40,6 +40,7 @@ const SSectionH4 = styled.h4`
 
 
 const schema = Yup.object({
+  user_id: Yup.string(),
   construction_type: Yup.string()
     .default("apartment"),
   area: Yup.string()
@@ -117,8 +118,9 @@ const schema = Yup.object({
     )
     .max(9999999999, 'Max number of digits in the street number is 10')
     .required('lease specify the street number'),
-  city_id: Yup.number(),
+  //       // }
   country_id: Yup.number(),
+  city_id: Yup.number(),
 });
 
 class PropertyForm extends React.Component {
@@ -129,6 +131,7 @@ class PropertyForm extends React.Component {
       cityList: [],
       choosedCountryId: 1,
       choosedCityId: 1,
+      user_id: "",
       newProperty: {
         user_id: "",
         construction_type: "apartment",
@@ -246,7 +249,7 @@ class PropertyForm extends React.Component {
       .catch(error => console.log(error));
   };
 
-  componentDidMount() {
+  componentWillMount() {
     const {auth} = this.props;
 
     // Decode JWT data and get User Id
@@ -255,60 +258,84 @@ class PropertyForm extends React.Component {
       newProperty: {
         ...this.state.newProperty,
         user_id: token.UserId
-      }
+      },
+    });
+
+    this.setState({
+      user_id: token.UserId
     });
 
     // GET REQUEST FOR ALL COUNTRY DATA
     this.getCountries();
     // GET REQUEST FOR ALL CITIES DATA
-    this.getCitiesByCountry();
+    if(this.state.addresses.country_id != null) {
+      this.getCitiesByCountry(this.state.addresses.country_id);
+    }
   }
 
-  getCountries = async () => {
-    const response = await Axios.get(`http://localhost:2308/api/countries`);
-    let countries = await response.data.countries;
-    this.setState({
-      countryList: countries,
-    });
+  getCountries = () => {
+    Axios.get(`http://localhost:2308/api/countries`)
+      .then(response => {
+        this.setState({
+          countryList: response.data.countries,
+        });
 
-    this.setState(
-      prevState => ({
-        newProperty: {
-          ...prevState.newProperty,
-          addresses: {
-            ...prevState.newProperty.addresses,
-            country_id: countries[0].country_id,
-          }
-        }
+        this.setState(
+          prevState => ({
+            newProperty: {
+              ...prevState.newProperty,
+              addresses: {
+                ...prevState.newProperty.addresses,
+                country_id: response.data.countries[0].country_id,
+              }
+            }
+          })
+        );
       })
-    );
+      .catch(error => console.log(error));
+
     console.log("List c", this.state.countryList);
   };
 
-  getCitiesByCountry = async () => {
-    const response = await Axios.get(`http://localhost:2308/api/countries/${this.state.choosedCountryId}/cities`);
-    let cities = await response.data.cities;
-    this.setState({
-      cityList: response.data.cities
-    })
+  getCitiesByCountry = e => {
+    console.log('Event', e);
 
-    this.setState(
-      prevState => ({
-        newProperty: {
-          ...prevState.newProperty,
-          addresses: {
-            ...prevState.newProperty.addresses,
-            city_id: cities[0].city_id,
-          }
-        }
+    Axios.get(`http://localhost:2308/api/countries/${e}/cities`)
+      .then(response => {
+        this.setState({
+          cityList: response.data.cities
+        });
+
+        this.setState(
+          prevState => ({
+            newProperty: {
+              ...prevState.newProperty,
+              addresses: {
+                ...prevState.newProperty.addresses,
+                city_id: response.data.cities[0].city_id,
+              }
+            }
+          })
+        );
       })
-    );
+      .catch(error => console.log(error));
+
+
     console.log("cities are", this.state.cityList);
   };
 
   formikFormSubmit = (propertyModel) => {
     console.log("Property Model to add", propertyModel);
 
+    Axios
+      .post(`http://localhost:2308/api/${this.state.newProperty.user_id}/property/new`,
+        propertyModel
+      )
+      .then(response => {
+        console.log(response);
+        // TODO: ADD REDIRECT TO THE HOME PAGE
+      })
+      .catch(error => console.log(error));
   };
 
   render() {
@@ -348,6 +375,7 @@ class PropertyForm extends React.Component {
               validationSchema={schema}
               onSubmit={console.log}
               initialValues={{
+                user_id: this.state.user_id,
                 construction_type: "apartment",
                 listing_currency: "usd",
                 listing_is_active: "true",
@@ -358,8 +386,10 @@ class PropertyForm extends React.Component {
                 values,
                 errors,
               }) => (
-                <Form noValidate onSubmit={
+                <Form noValidate onSubmit={(e) => {
+                  e.preventDefault();
                   this.formikFormSubmit(JSON.stringify(values, null, 2))
+                }
                 }>
 
                   {/* Construction type*/}
@@ -512,7 +542,10 @@ class PropertyForm extends React.Component {
                       <Form.Control as="select"
                                     name={"country_id"}
                                     value={values.country_id}
-                                    onChange={handleChange}
+                                    onChange={e => {
+                                      handleChange(e);
+                                      this.getCitiesByCountry(e.target.value)
+                                    }}
                                     isInvalid={!!errors.country_id}
                       >
                         {countryOptions}
@@ -733,171 +766,6 @@ class PropertyForm extends React.Component {
             </Form>
           </Container>
         </SSection>
-
-
-        {/*<Container>*/}
-        {/*  <Form onSubmit={this.onFormSubmit}>*/}
-        {/*      <Form.Group as={Row} controlId="formGridConstructionType">*/}
-        {/*        <Form.Label column sm={3}>Type</Form.Label>*/}
-        {/*        <Col sm={9}>*/}
-        {/*          <Form.Control*/}
-        {/*            as="select"*/}
-        {/*            value={this.state.newProperty.construction_type}*/}
-        {/*            name={"construction_type"}*/}
-        {/*            onChange={this.handleSelectPropTypeChange}*/}
-        {/*          >*/}
-        {/*            <option defaultValue="apartment">Apartment</option>*/}
-        {/*            <option value="house">House</option>*/}
-        {/*          </Form.Control>*/}
-        {/*        </Col>*/}
-        {/*      </Form.Group>*/}
-
-
-        {/*<Form.Group as={Col} controlId="formGridArea">*/}
-        {/*  <Form.Label>Area</Form.Label>*/}
-        {/*  <Form.Control type="text"*/}
-        {/*                placeholder="Property area"*/}
-        {/*                for={this.state.newProperty.area}*/}
-        {/*                name={"area"}*/}
-        {/*                onChange={this.handleSelectPropTypeChange}/>*/}
-        {/*</Form.Group>*/}
-
-        {/*<Form.Row>*/}
-        {/*  <Form.Group as={Col} controlId="formGridRoomNumber">*/}
-        {/*    <Form.Label>Rooms</Form.Label>*/}
-        {/*    <Form.Control type="text"*/}
-        {/*                  placeholder="Room number"*/}
-        {/*                  for={this.state.newProperty.room_number}*/}
-        {/*                  name={"room_number"}*/}
-        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
-        {/*  </Form.Group>*/}
-
-        {/*  <Form.Group as={Col} controlId="formGridBathroomNumber">*/}
-        {/*    <Form.Label>Bathrooms</Form.Label>*/}
-        {/*    <Form.Control type="text"*/}
-        {/*                  placeholder="Bathroom number"*/}
-        {/*                  for={this.state.newProperty.bathroom_number}*/}
-        {/*                  name={"bathroom_number"}*/}
-        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
-        {/*  </Form.Group>*/}
-
-        {/*  <Form.Group as={Col} controlId="formGridMaxFloor">*/}
-        {/*    <Form.Label>Max Floor</Form.Label>*/}
-        {/*    <Form.Control type="text"*/}
-        {/*                  placeholder="Floor number"*/}
-        {/*                  for={this.state.newProperty.max_floor_number}*/}
-        {/*                  name={"max_floor_number"}*/}
-        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
-        {/*  </Form.Group>*/}
-
-        {/*  <Form.Group as={Col} controlId="formGridPropertyFloor">*/}
-        {/*    <Form.Label>Property Floor</Form.Label>*/}
-        {/*    <Form.Control type="text"*/}
-        {/*                  placeholder="Floor number"*/}
-        {/*                  for={this.state.newProperty.property_floor_number}*/}
-        {/*                  name={"property_floor_number"}*/}
-        {/*                  onChange={this.handleSelectPropTypeChange}/>*/}
-        {/*  </Form.Group>*/}
-        {/*</Form.Row>*/}
-
-        {/*<Form.Row>*/}
-        {/*  <Form.Group as={Col} md={3}>*/}
-        {/*    <Form.Label>Kids</Form.Label>*/}
-        {/*    <Form.Control*/}
-        {/*      as="select"*/}
-        {/*      value={this.state.newProperty.kids_allowed}*/}
-        {/*      name={"kids_allowed"}*/}
-        {/*      onChange={this.handleSelectPropTypeChange}*/}
-        {/*    >*/}
-        {/*      <option value={"true"}>Are allowed</option>*/}
-        {/*      <option value={"false"}>Are not allowed</option>*/}
-        {/*    </Form.Control>*/}
-        {/*  </Form.Group>*/}
-        {/*</Form.Row>*/}
-
-        {/*<Form.Row>*/}
-        {/*  <Form.Group as={Col} md={3}>*/}
-        {/*    <Form.Label>Kids</Form.Label>*/}
-        {/*    <Form.Control*/}
-        {/*      as="select"*/}
-        {/*      value={this.state.newProperty.pets_allowed}*/}
-        {/*      name={"pets_allowed"}*/}
-        {/*      onChange={this.handleSelectPropTypeChange}*/}
-        {/*    >*/}
-        {/*      <option value={"true"}>Are allowed</option>*/}
-        {/*      <option value={"false"}>Are not allowed</option>*/}
-        {/*    </Form.Control>*/}
-        {/*  </Form.Group>*/}
-        {/*</Form.Row>*/}
-
-        {/*<Form.Group controlId="formGridListingDescription">*/}
-        {/*  <Form.Label>Listing Description</Form.Label>*/}
-        {/*  <Form.Control type="text"*/}
-        {/*                placeholder="Describe your property"*/}
-        {/*                for={this.state.newProperty.listing_description}*/}
-        {/*                name={"listing_description"}*/}
-        {/*                onChange={this.handleSelectCurrencyTypeChange}/>*/}
-        {/*</Form.Group>*/}
-
-        {/*<Form.Row>*/}
-        {/*  <Form.Group as={Col} controlId="formGridListingPrice">*/}
-        {/*    <Form.Label>Listing Price</Form.Label>*/}
-        {/*    <Form.Control type="text"*/}
-        {/*                  placeholder="Enter selling price"*/}
-        {/*                  for={this.state.newProperty.listing_price}*/}
-        {/*                  name={"listing_price"}*/}
-        {/*                  onChange={this.handleSelectCurrencyTypeChange}/>*/}
-        {/*  </Form.Group>*/}
-
-        {/*  <Form.Group as={Col} controlId="formGridCurrencyType">*/}
-        {/*    <Form.Label>Currency</Form.Label>*/}
-        {/*    <Form.Control as="select"*/}
-        {/*                  value={this.state.newProperty.listing_currency}*/}
-        {/*                  defaultValue="usd"*/}
-        {/*                  name={"listing_currency"}*/}
-        {/*                  onChange={this.handleSelectCurrencyTypeChange}*/}
-        {/*                  >*/}
-        {/*      <option value={"usd"}>USD</option>*/}
-        {/*      <option value={"hrv"}>HRV</option>*/}
-        {/*      <option value={"eur"}>EUR</option>*/}
-        {/*    </Form.Control>*/}
-        {/*  </Form.Group>*/}
-        {/*</Form.Row>*/}
-
-
-        {/*<Form.Row>*/}
-        {/*  <Form.Group as={Col} controlId="formGridCity">*/}
-        {/*    <Form.Label>City</Form.Label>*/}
-        {/*    <Form.Control/>*/}
-        {/*  </Form.Group>*/}
-
-        {/*  <Form.Group as={Col} controlId="formGridCountry">*/}
-        {/*    <Form.Label>State</Form.Label>*/}
-        {/*    <Form.Control as="select">*/}
-        {/*      <option>Choose...</option>*/}
-        {/*      <option>...</option>*/}
-        {/*    </Form.Control>*/}
-        {/*  </Form.Group>*/}
-
-        {/*  <Form.Group as={Col} controlId="formGridZip">*/}
-        {/*    <Form.Label>Zip</Form.Label>*/}
-        {/*    <Form.Control/>*/}
-        {/*  </Form.Group>*/}
-        {/*</Form.Row>*/}
-
-        {/*<Form.Group>*/}
-        {/*  <Form.Check*/}
-        {/*    required*/}
-        {/*    label="Agree to terms and conditions"*/}
-        {/*    feedback="You must agree before submitting."*/}
-        {/*  />*/}
-        {/*</Form.Group>*/}
-
-        {/*    <Button variant="primary" type="submit">*/}
-        {/*      Submit*/}
-        {/*    </Button>*/}
-        {/*  </Form>*/}
-        {/*</Container>*/}
       </Style>
     );
   }
