@@ -129,8 +129,8 @@ class PropertyForm extends React.Component {
     this.state = {
       countryList: [],
       cityList: [],
-      choosedCountryId: 1,
-      choosedCityId: 1,
+      choosedCountryId: '',
+      choosedCityId: '',
       user_id: "",
       newProperty: {
         user_id: "",
@@ -154,101 +154,6 @@ class PropertyForm extends React.Component {
     }
   }
 
-  handleSelectPropTypeChange = e => {
-    // let value = e.target.value;
-    // let name = e.target.name;
-    // e.preventDefault();
-    // let {newProperty} = {...this.state};
-    // let currentPropertyState = newProperty;
-    const {name, value} = e.target;
-    //
-    // currentPropertyState[name] = value;
-    this.setState({
-      newProperty: {
-        ...this.state.newProperty,
-        value: name,
-      }
-    });
-    console.log("Name", name, "Value", value);
-    console.log(this.state)
-  };
-
-  handleInput = (e) => {
-    let value = e.target.value;
-    let name = e.target.name;
-    this.setState(
-      prevState => ({
-        newProperty: {
-          ...prevState.newProperty,
-          [name]: value
-        }
-      }),
-      () => console.log(this.state.newProperty)
-    );
-  };
-
-  handleInputCountry = (e) => {
-    this.handlerInputAddress(e);
-
-    // var country = this.state.countryList.find(country => country.country_name === e.target.value);
-
-    this.setState({
-      choosedCountryId: e.target.value,
-    }, () => {
-      this.getCitiesByCountry();
-    });
-
-
-    // console.log("event", country);
-  };
-
-  handlerInputAddress = (e) => {
-    let value = e.target.value;
-    let name = e.target.name;
-    this.setState(
-      prevState => ({
-        newProperty: {
-          ...prevState.newProperty,
-          addresses: {
-            ...prevState.newProperty.addresses,
-            [name]: value,
-          }
-        }
-      }),
-      () => console.log(this.state.newProperty)
-    );
-  };
-
-  // Listing (FOR CURRENCY TYPE)
-  handleSelectCurrencyTypeChange = e => {
-    e.preventDefault();
-    let {newProperty} = {...this.state};
-    let currentListingState = newProperty;
-    const {name, value} = e.target;
-
-    currentListingState[name] = value;
-
-    console.log("Name", name, "Value", value);
-    console.log(this.state.newProperty)
-  };
-
-  // `http://localhost:2308/api/${this.state.user_id}/property/new`
-  onFormSubmit = e => {
-    e.preventDefault();
-
-    console.log("Request", this.state.newProperty);
-
-    Axios
-      .post(`http://localhost:2308/api/${this.state.newProperty.user_id}/property/new`,
-        this.state.newProperty
-      )
-      .then(response => {
-        console.log(response);
-        // TODO: ADD REDIRECT TO THE HOME PAGE
-      })
-      .catch(error => console.log(error));
-  };
-
   componentWillMount() {
     const {auth} = this.props;
 
@@ -267,30 +172,20 @@ class PropertyForm extends React.Component {
 
     // GET REQUEST FOR ALL COUNTRY DATA
     this.getCountries();
-    // GET REQUEST FOR ALL CITIES DATA
-    if(this.state.addresses.country_id != null) {
-      this.getCitiesByCountry(this.state.addresses.country_id);
+    if (this.state.countryList[0] != null) {
+      this.getCitiesByCountry(this.state.countryList[0].country_id);
+
     }
   }
 
   getCountries = () => {
-    Axios.get(`http://localhost:2308/api/countries`)
+    Axios.get(`http://localhost:2308/api/countries/with-cities`)
       .then(response => {
         this.setState({
           countryList: response.data.countries,
+        }, () => {
+          this.getCitiesByCountry(this.state.countryList[0].country_id);
         });
-
-        this.setState(
-          prevState => ({
-            newProperty: {
-              ...prevState.newProperty,
-              addresses: {
-                ...prevState.newProperty.addresses,
-                country_id: response.data.countries[0].country_id,
-              }
-            }
-          })
-        );
       })
       .catch(error => console.log(error));
 
@@ -305,18 +200,6 @@ class PropertyForm extends React.Component {
         this.setState({
           cityList: response.data.cities
         });
-
-        this.setState(
-          prevState => ({
-            newProperty: {
-              ...prevState.newProperty,
-              addresses: {
-                ...prevState.newProperty.addresses,
-                city_id: response.data.cities[0].city_id,
-              }
-            }
-          })
-        );
       })
       .catch(error => console.log(error));
 
@@ -324,18 +207,20 @@ class PropertyForm extends React.Component {
     console.log("cities are", this.state.cityList);
   };
 
-  formikFormSubmit = (propertyModel) => {
-    console.log("Property Model to add", propertyModel);
+  formikFormSubmit = ({propertyModel, errors, e}) => {
+    if(Object.entries(errors).length === 0 && errors.constructor === Object && propertyModel != null) {
+      // e.preventDefault();
 
-    Axios
-      .post(`http://localhost:2308/api/${this.state.newProperty.user_id}/property/new`,
-        propertyModel
-      )
-      .then(response => {
-        console.log(response);
-        // TODO: ADD REDIRECT TO THE HOME PAGE
-      })
-      .catch(error => console.log(error));
+      Axios
+        .post(`http://localhost:2308/api/${this.state.newProperty.user_id}/property/new`,
+          propertyModel
+        )
+        .then(response => {
+          console.log(response);
+          // TODO: ADD REDIRECT TO THE HOME PAGE
+        })
+        .catch(error => console.log(error));
+    }
   };
 
   render() {
@@ -352,7 +237,7 @@ class PropertyForm extends React.Component {
       )
     }
 
-    if (this.state.choosedCountryId != null && this.state.cityList.length > 0) {
+  if (this.state.choosedCountryId != null && this.state.cityList != null && this.state.cityList.length > 0) {
       cityOptions = this.state.cityList.map((city) =>
         <option key={city.city_id}
                 id={city.city_id}
@@ -373,7 +258,6 @@ class PropertyForm extends React.Component {
 
             <Formik
               validationSchema={schema}
-              onSubmit={console.log}
               initialValues={{
                 user_id: this.state.user_id,
                 construction_type: "apartment",
@@ -388,7 +272,8 @@ class PropertyForm extends React.Component {
               }) => (
                 <Form noValidate onSubmit={(e) => {
                   e.preventDefault();
-                  this.formikFormSubmit(JSON.stringify(values, null, 2))
+                  const vals = JSON.stringify(values, null, 2);
+                  this.formikFormSubmit({vals, errors})
                 }
                 }>
 
@@ -604,166 +489,6 @@ class PropertyForm extends React.Component {
             </Formik>
 
             {/* End of Formik form */}
-
-
-
-
-
-
-
-            <Form onSubmit={this.onFormSubmit}>
-
-              <Form.Group as={Row} controlId="formGridConstructionType">
-                <Form.Label column sm={3}>Type</Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    as="select"
-                    value={this.state.newProperty.construction_type}
-                    name={"construction_type"}
-                    onChange={this.handleInput}
-                  >
-                    <option value="apartment">Apartment</option>
-                    <option value="house">House</option>
-                  </Form.Control>
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formGridArea">
-                <Form.Label column sm={3}>Area</Form.Label>
-                <Col sm={9}>
-                  <Form.Control type="text"
-                                placeholder="Property area"
-                                for={this.state.newProperty.area}
-                                name={"area"}
-                                onChange={this.handleInput}/>
-                </Col>
-              </Form.Group>
-
-              {/* ROOM NUMBER AND BATHROOM NUMBER */}
-              <Form.Group as={Row} controlId="formGridRoomNumber">
-                <Form.Label column sm={3}>Rooms</Form.Label>
-                <Col sm={5}>
-                  <Form.Control type="text"
-                                placeholder="Room number"
-                                for={this.state.newProperty.room_number}
-                                name={"room_number"}
-                                onChange={this.handleInput}/>
-                </Col>
-                <Col sm={4}>
-                  <Form.Control type="text"
-                                placeholder="Bathroom number"
-                                for={this.state.newProperty.bathroom_number}
-                                name={"bathroom_number"}
-                                onChange={this.handleInput}/>
-                </Col>
-              </Form.Group>
-
-              {/* FLOOR NUMBER */}
-              <Form.Group as={Row} controlId="formGridMaxFloor">
-                <Form.Label column sm={3}>Floors</Form.Label>
-                <Col sm={5}>
-                  <Form.Control type="text"
-                                placeholder="Max floor"
-                                for={this.state.newProperty.max_floor_number}
-                                name={"max_floor_number"}
-                                onChange={this.handleInput}/>
-                </Col>
-                <Col sm={4}>
-                  <Form.Control type="text"
-                                placeholder="Property floor"
-                                for={this.state.newProperty.property_floor_number}
-                                name={"property_floor_number"}
-                                onChange={this.handleInput}/>
-                </Col>
-              </Form.Group>
-
-              {/* PROPERTY DESCRIPTION */}
-              <Form.Group as={Row} md={3}>
-                <Form.Label column sm={3}>Listing Description</Form.Label>
-                <Col sm={9}>
-                  <Form.Control type="text"
-                                placeholder="Describe your property"
-                                for={this.state.newProperty.listing_description}
-                                name={"listing_description"}
-                                onChange={this.handleInput}/>
-                </Col>
-              </Form.Group>
-
-              {/* PROPERTY PRICE AND CURRENCY */}
-              <Form.Group as={Row} md={3}>
-                <Form.Label column sm={3}>Listing Price</Form.Label>
-                <Col sm={5}>
-                  <Form.Control type="text"
-                                placeholder="Enter selling price"
-                                for={this.state.newProperty.listing_price}
-                                name={"listing_price"}
-                                onChange={this.handleInput}/>
-                </Col>
-                <Col sm={4}>
-                  <Form.Control as="select"
-                                value={this.state.newProperty.listing_currency}
-                                defaultValue="usd"
-                                name={"listing_currency"}
-                                onChange={this.handleInput}
-                  >
-                    <option value={"usd"}>USD</option>
-                    <option value={"hrv"}>HRV</option>
-                    <option value={"eur"}>EUR</option>
-                  </Form.Control>
-                </Col>
-              </Form.Group>
-
-              {/* COUNTRY */}
-              <Form.Group as={Row} md={3}>
-                <Form.Label column sm={3}>Country</Form.Label>
-                <Col sm={5}>
-                  <Form.Control as="select"
-                                value={this.state.newProperty.addresses.country_id}
-                                defaultValue={this.state.countryList[0]}
-                                name={"country_id"}
-                                onChange={this.handleInputCountry}
-                  >
-                    {countryOptions}
-                  </Form.Control>
-                </Col>
-                <Col sm={4}>
-                  <Form.Control as="select"
-                                value={this.state.newProperty.addresses.city_id}
-                                defaultValue={this.state.cityList[0]}
-                                name={"city_id"}
-                                onChange={this.handlerInputAddress}
-                  >
-                    {cityOptions}
-                  </Form.Control>
-                </Col>
-              </Form.Group>
-
-              {/* ADDRESS*/}
-              <Form.Group as={Row} md={3}>
-                <Form.Label column sm={3}>Address</Form.Label>
-                <Col sm={5}>
-                  <Form.Control type="text"
-                                placeholder="Enter property address"
-                                for={this.state.newProperty.addresses.street_name}
-                                name={"street_name"}
-                                onChange={this.handlerInputAddress}/>
-                </Col>
-                <Col sm={4}>
-                  <Form.Control type="text"
-                                placeholder="Enter property building"
-                                for={this.state.newProperty.addresses.street_number}
-                                name={"street_number"}
-                                onChange={this.handlerInputAddress}/>
-                </Col>
-              </Form.Group>
-
-
-              {/* SUMIT FORM */}
-
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </Form>
           </Container>
         </SSection>
       </Style>
