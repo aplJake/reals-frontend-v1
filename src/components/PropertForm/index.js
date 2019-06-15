@@ -74,12 +74,13 @@ const schema = Yup.object({
   property_floor_number: Yup.string()
     .test(
       'Floor numbers matches',
-      'Max floor is greater than your property floor',
+      'Floor number not matches',
       function(value) {
         const {path, createError } = this;
-        let maxFloor = this.parent.max_floor_number;
+        let maxFloor = parseInt(this.parent.max_floor_number, 10);
+        let valueInteger = parseInt(value, 10);
 
-        if(value > maxFloor) {
+        if(valueInteger > maxFloor) {
           return createError(path, "Message");
         } else {
           return true;
@@ -119,8 +120,10 @@ const schema = Yup.object({
     .max(9999999999, 'Max number of digits in the street number is 10')
     .required('lease specify the street number'),
   //       // }
-  country_id: Yup.number(),
-  city_id: Yup.number(),
+  country_id: Yup.number()
+    .required('Please specify the value'),
+  city_id: Yup.number()
+  .required('Please specify the value'),
 });
 
 class PropertyForm extends React.Component {
@@ -132,49 +135,21 @@ class PropertyForm extends React.Component {
       choosedCountryId: '',
       choosedCityId: '',
       user_id: "",
-      newProperty: {
-        user_id: "",
-        construction_type: "apartment",
-        area: "",
-        room_number: "",
-        bathroom_number: "",
-        max_floor_number: "",
-        property_floor_number: "",
-        listing_description: "",
-        listing_price: "",
-        listing_currency: "usd",
-        listing_is_active: "true",
-        addresses: {
-          street_name: "",
-          street_number: "",
-          city_id: "",
-          country_id: "",
-        }
-      }
     }
   }
 
   componentWillMount() {
-    const {auth} = this.props;
-
     // Decode JWT data and get User Id
+    const {auth} = this.props;
     let token = decode(auth);
-    this.setState({
-      newProperty: {
-        ...this.state.newProperty,
-        user_id: token.UserId
-      },
-    });
-
     this.setState({
       user_id: token.UserId
     });
 
-    // GET REQUEST FOR ALL COUNTRY DATA
+    // GET request for countries and city for the first country in the state
     this.getCountries();
     if (this.state.countryList[0] != null) {
       this.getCitiesByCountry(this.state.countryList[0].country_id);
-
     }
   }
 
@@ -193,8 +168,6 @@ class PropertyForm extends React.Component {
   };
 
   getCitiesByCountry = e => {
-    console.log('Event', e);
-
     Axios.get(`http://localhost:2308/api/countries/${e}/cities`)
       .then(response => {
         this.setState({
@@ -202,18 +175,26 @@ class PropertyForm extends React.Component {
         });
       })
       .catch(error => console.log(error));
-
-
     console.log("cities are", this.state.cityList);
   };
 
-  formikFormSubmit = ({propertyModel, errors, e}) => {
-    if(Object.entries(errors).length === 0 && errors.constructor === Object && propertyModel != null) {
+  formikFormSubmit = (propertyModel, errors) => {
+    console.log("property type", Object.values(propertyModel).length);
+    console.log("errors length", Object.entries(errors).length);
+    console.log("property model", propertyModel);
+    console.log("user id", this.state.user_id);
+
+    if(Object.values(propertyModel).length > 6) {
+      console.log("YES");
+    }
+
+    if(Object.entries(errors).length === 0 && Object.entries(propertyModel).length > 6) {
       // e.preventDefault();
 
+      let jsonValues = JSON.stringify(propertyModel, null, 2);
       Axios
-        .post(`http://localhost:2308/api/${this.state.newProperty.user_id}/property/new`,
-          propertyModel
+        .post(`http://localhost:2308/api/${this.state.user_id}/property/new`,
+          jsonValues
         )
         .then(response => {
           console.log(response);
@@ -247,6 +228,7 @@ class PropertyForm extends React.Component {
       )
     }
 
+
     return (
       <Style>
         <SSection>
@@ -258,8 +240,11 @@ class PropertyForm extends React.Component {
 
             <Formik
               validationSchema={schema}
+              onSubmit={console.log}
               initialValues={{
                 user_id: this.state.user_id,
+                country_id: this.state.choosedCountryId,
+                city_id:this.state.choosedCityId,
                 construction_type: "apartment",
                 listing_currency: "usd",
                 listing_is_active: "true",
@@ -272,9 +257,9 @@ class PropertyForm extends React.Component {
               }) => (
                 <Form noValidate onSubmit={(e) => {
                   e.preventDefault();
-                  const vals = JSON.stringify(values, null, 2);
-                  this.formikFormSubmit({vals, errors})
-                }
+                  console.log("Values in submit", values);
+                  this.formikFormSubmit(values, errors)
+                  }
                 }>
 
                   {/* Construction type*/}
@@ -433,6 +418,7 @@ class PropertyForm extends React.Component {
                                     }}
                                     isInvalid={!!errors.country_id}
                       >
+                        <option value={null}>Choose country</option>
                         {countryOptions}
                       </Form.Control>
                       <Form.Control.Feedback type="invalid">
@@ -446,6 +432,7 @@ class PropertyForm extends React.Component {
                                     onChange={handleChange}
                                     isInvalid={!!errors.city_id}
                       >
+                        <option value={null}>Choose city</option>
                         {cityOptions}
                       </Form.Control>
                       <Form.Control.Feedback type="invalid">
