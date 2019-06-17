@@ -28,6 +28,7 @@ import HomesPage from "./components/MainPage/HomesPage";
 import PropertyPage from "./components/PropertyPage";
 import AdminsAdminInfo from "./components/AdminPage/AdminsAdminInfo";
 import CitiesAdminInfo from "./components/AdminPage/CitiesAdminInfo";
+import UpdatePropertyForm from "./components/PropertForm/UpdatePropertyForm";
 
 const store = createStore(
   reducers,
@@ -52,6 +53,7 @@ ReactDOM.render(
         <Route exact path="/signout" component={Signout} />
         <Route exact path="/profile" component={UserProfile} />
         <Route exact path="/property/new" component={PropertyForm} />
+        <Route exact path="/property/update/:id" component={UpdatePropertyForm} />
 
         <Route exact path="/admin" component={AdminPage}/>
         <Route exact path="/admin/users" component={UsersAdminInfo}/>

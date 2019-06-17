@@ -7,93 +7,54 @@ import {Button, Col, Container, Row} from "react-bootstrap";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
 
-const ListingItemStyle = styled.div`
-  margin: 8px 0;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  h4 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #565656;
-  }
-  h5 {
-    font-weight: 500;
-    font-size: 16px;
-    color: #333333;
-  }
-
-  h6 {
-    font-weight: 400;
-    font-size: 14px;
-    color: #333333;
-    margin-top: 6px;
-  }
-
-  .listing-wrapper {
-    padding: 10px;
-  }
-
-  .h-listing-name {
-    margin-top: 6px;
-    // margin-left: 10px;
-  }
-
-  .h-listing-facilities {
-    margin-right: 10px;
-    font-weight: 400;
-    font-size: 14px;
-    color: #333333;
-  }
-`;
-
-const ListingItem = ({listingDescription, price, currency, createdAt, updatedAt, removeOnClick}) => (
+const ListingItem = ({listing, removeOnClick, updateOnClick}) => (
   <SSectionListing>
     <Container>
       <Row>
         <Col sm="10">
           <SSectinHeaderWrapper>
-            <SSectionH5>{listingDescription}</SSectionH5>
+            <SSectionH5>{listing.listing_description}</SSectionH5>
           </SSectinHeaderWrapper>
         </Col>
         <Col sm="2" className="to-right">
           <SSectinHeaderWrapper>
-            <SSectionH5>{price} {currency}</SSectionH5>
+            <SSectionH5>{listing.listing_price} {listing.listing_currency}</SSectionH5>
           </SSectinHeaderWrapper>
         </Col>
       </Row>
       <Row>
         <Col sm={"10"}>
           <Row>
-            <Col><h6 className={"tiny-description"}>{new Date(createdAt).toDateString()}</h6></Col>
+            <Col><h6 className={"tiny-description"}>{new Date(listing.created_at).toDateString()}</h6></Col>
           </Row>
           <Row>
-            <Col><h6 className={"tiny-description"}>{new Date(updatedAt).toDateString()}</h6></Col>
+            <Col><h6 className={"tiny-description"}>{new Date(listing.updated_at).toDateString()}</h6></Col>
           </Row>
         </Col>
         <Col sm={"2"}>
-          <Link to="/property/new">
+          <Row>
+            <Link to={`/property/update/${listing.property_id}`}>
+              <Button variant="primary"
+              >
+                Update
+              </Button>
+            </Link>
+          </Row>
+          <Row>
             <Button variant="primary"
-                    onClick={removeOnClick}>
-              Remove listing
+                    onClick={(e) => {
+                      e.preventDefault();
+                      removeOnClick(listing.property_id);
+                    }}
+            >
+              Remove
             </Button>
-          </Link>
+          </Row>
         </Col>
       </Row>
     </Container>
   </SSectionListing>
 );
-
-class ProfileAdsListing extends Component {
-  render() {
-    return (
-      <Container>
-        <ListingItem/>
-        <ListingItem/>
-        <ListingItem/>
-      </Container>
-    );
-  }
-}
 
 const SPageBase = styled.div`
   background: #f6f6f6;
@@ -123,8 +84,12 @@ const SSection = styled.div`
 const SSectionZMargin = styled(SSection)`
   margin-bottom: 0;
 `;
+
 const SSectionListing = styled(SSectionZMargin)`
   border-bottom: 1px solid #bbbbbb;
+  button {
+    margin-bottom: 5px;
+  };
 `;
 
 const SSectinHeaderWrapper = styled.div`
@@ -232,7 +197,6 @@ class UserProfile extends Component {
     );
   };
 
-
   profileDescription = () => {
     if (this.state.userProfile.profileDescription.length === 0) {
       return (
@@ -245,8 +209,28 @@ class UserProfile extends Component {
     }
   };
 
-  handleAddProperty = () => {
+  deleteListingHandler = (countryID) => {
+    axios
+      .delete(`http://localhost:2308/api/countries/${countryID}`)
+      .then(response => {
+        console.log("Country deleted status: ", response);
+      })
+      .catch(error => console.log(error));
+  };
 
+  // Delete admin action
+  editListingHandler = (listing) => {
+    console.log("On edit listing: ", listing);
+
+    // this.setState({
+    //   countryOnEdit: country
+    // }, () => {
+    //   console.log("Editable country", this.state.countryOnEdit)
+    // });
+    //
+    // this.setState({
+    //   onEditMode: !this.state.onEditMode
+    // })
   };
 
   render() {
@@ -268,11 +252,9 @@ class UserProfile extends Component {
     if (!this.state.tokenPayload.IsAdmin && this.state.profileListings.length > 0) {
       listings = this.state.profileListings.map((l) =>
         <ListingItem key={l.property_id}
-                     listingDescription={l.listing_description}
-                     price={l.listing_price}
-                     currency={l.listing_currency}
-                     createdAt={l.created_at}
-                     updatedAt={l.updated_at}
+                     listing={l}
+                     updateOnClick={this.editListingHandler}
+                     removeOnClick={this.deleteListingHandler}
         />
       )
     }
@@ -313,6 +295,7 @@ class UserProfile extends Component {
                   </Button>
                 </Col>
               </Row>
+
             )}
           </Container>
         </SSection>
@@ -362,74 +345,4 @@ class UserProfile extends Component {
   }
 }
 
-
-{/*<Container>*/
-}
-{/*  <Style>*/
-}
-{/*    <Col>*/
-}
-{/*      <Jumbotron className="profile-name">*/
-}
-{/*        <h3>{this.state.userName}</h3>*/
-}
-{/*      </Jumbotron>*/
-}
-{/*    </Col>*/
-}
-{/*    <hr />*/
-}
-{/*    <Col>*/
-}
-{/*      <h4>Profile Description</h4>*/
-}
-{/*    </Col>*/
-}
-
-
-{/*    <Row>*/
-}
-{/*      <Col md="10">*/
-}
-{/*        <h4>Your countries</h4>*/
-}
-{/*      </Col>*/
-}
-{/*      <Col className="to-right">*/
-}
-{/*        <Link to="/property/new">*/
-}
-{/*          <Button variant="primary"*/
-}
-{/*                  onClick={this.handleAddProperty}>*/
-}
-{/*            Add Property*/
-}
-{/*          </Button>*/
-}
-{/*        </Link>*/
-}
-{/*      </Col>*/
-}
-{/*    </Row>*/
-}
-{/*    <Row>*/
-}
-{/*      <Col><hr/></Col>*/
-}
-{/*    </Row>*/
-}
-
-{/*    <ProfileAdsListing />*/
-}
-{/*    <Row />*/
-}
-{/*  </Style>*/
-}
-{/*</Container>*/
-}
-
-// function mapStateToProps(state) {
-//   return { loggedUser: state.auth };
-// }
 export default requireAuth(UserProfile);

@@ -51,11 +51,6 @@ const schema = Yup.object({
     .max(9999999999, 'Area should be less than 10 digits')
     .required('Please specify the property area'),
   room_number: Yup.string()
-    .matches(
-      /^[0-9]*$/,
-      'This field should contain only numbers'
-    )
-    .max(4, 'Apartment with more that 4 rooms will be automatically added into special group "more than 4 db"')
     .required("Please specify property room number"),
   bathroom_number: Yup.string()
     .matches(
@@ -179,15 +174,6 @@ class PropertyForm extends React.Component {
   };
 
   formikFormSubmit = (propertyModel, errors) => {
-    console.log("property type", Object.values(propertyModel).length);
-    console.log("errors length", Object.entries(errors).length);
-    console.log("property model", propertyModel);
-    console.log("user id", this.state.user_id);
-
-    if(Object.values(propertyModel).length > 6) {
-      console.log("YES");
-    }
-
     if(Object.entries(errors).length === 0 && Object.entries(propertyModel).length > 6) {
       // e.preventDefault();
 
@@ -303,13 +289,17 @@ class PropertyForm extends React.Component {
                   <Form.Group as={Row} controlId="formGridRoomNumber">
                     <Form.Label column sm={3}>Rooms</Form.Label>
                     <Col sm={5}>
-                      <Form.Control type="text"
-                                    placeholder="Room number"
+                      <Form.Control as="select"
                                     name={"room_number"}
                                     value={values.room_number}
                                     onChange={handleChange}
                                     isInvalid={!!errors.room_number}
-                      />
+                      >
+                        <option value={1}>1 bedroom</option>
+                        <option value={2}>2 bedroom</option>
+                        <option value={3}>3 bedroom</option>
+                        <option value={4}>more than 3 bd</option>
+                      </Form.Control>
                       <Form.Control.Feedback type="invalid">
                         {errors.room_number}
                       </Form.Control.Feedback>

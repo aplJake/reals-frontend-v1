@@ -72,14 +72,6 @@ const ListingItem = ({listingId, listingDescription, price, currency, createdAt,
             <Col><h6 className={"tiny-description"}>{new Date(updatedAt).toDateString()}</h6></Col>
           </Row>
         </Col>
-        <Col sm={"2"}>
-          <Link to="/property/new">
-            <Button variant="primary"
-                    onClick={removeOnClick}>
-              Remove listing
-            </Button>
-          </Link>
-        </Col>
       </Row>
     </Container>
   </SSectionListing>
