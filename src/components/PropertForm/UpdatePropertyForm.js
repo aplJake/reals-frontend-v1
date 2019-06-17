@@ -103,23 +103,11 @@ const schema = Yup.object({
     .required('Please specify the listing price of the prperty'),
   listing_currency: Yup.string().default('usd'),
   listing_is_active: Yup.bool().default(true),
-  street_name: Yup.string()
-    .min(4, 'Min name of the street is 4')
-    .max(150, 'Max number of the street is 150')
-    .required('Please specify property street'),
-  street_number: Yup.string()
-    .matches(
-      /^[0-9]*$/,
-      'This field should contain only numbers'
-    )
-    .max(9999999999, 'Max number of digits in the street number is 10')
-    .required('lease specify the street number'),
-  //       // }
   country_id: Yup.number()
     .required('Please specify the value'),
   city_id: Yup.number()
     .required('Please specify the value'),
-  address_id: Yup.string(),
+  region_id: Yup.string(),
 });
 
 class UpdatePropertyForm extends React.Component {
@@ -128,6 +116,7 @@ class UpdatePropertyForm extends React.Component {
     this.state = {
       countryList: [],
       cityList: [],
+      regionsList: [],
       choosedCountryId: '',
       choosedCityId: '',
       user_id: '',
@@ -183,10 +172,23 @@ class UpdatePropertyForm extends React.Component {
       .then(response => {
         this.setState({
           cityList: response.data.cities
+        },() => {
+          this.getRegionsByCity(this.state.cityList[0].city_id)
         });
       })
       .catch(error => console.log(error));
     console.log("cities are", this.state.cityList);
+  };
+
+  getRegionsByCity = cityID => {
+    Axios.get(`http://localhost:2308/api/cities/${cityID}/regions`)
+      .then(response => {
+        this.setState({
+          regionsList: response.data.regions
+        });
+      })
+      .catch(error => console.log(error));
+    console.log("regions are", this.state.regionsList);
   };
 
   formikFormSubmit = (propertyModel, errors) => {
@@ -208,8 +210,7 @@ class UpdatePropertyForm extends React.Component {
 
   render() {
     console.log("Countries render", this.state.countryList);
-    let countryOptions;
-    let cityOptions;
+    let countryOptions, cityOptions, regionsOptions;
 
     if (this.state.countryList && this.state.countryList.length > 0) {
       countryOptions = this.state.countryList.map((country) =>
@@ -226,6 +227,16 @@ class UpdatePropertyForm extends React.Component {
                 id={city.city_id}
                 value={city.city_id}>
           {city.city_name}
+        </option>
+      )
+    }
+
+    if (this.state.regionsList && this.state.regionsList.length > 0) {
+      regionsOptions = this.state.regionsList.map((region) =>
+        <option key={region.region_id}
+                id={region.region_id}
+                value={region.region_id}>
+          {region.region_name}
         </option>
       )
     }
@@ -448,28 +459,40 @@ class UpdatePropertyForm extends React.Component {
                     <Form.Group as={Row} md={3}>
                       <Form.Label column sm={3}>Address</Form.Label>
                       <Col sm={5}>
-                        <Form.Control type="text"
-                                      placeholder="Enter property address"
-                                      name={"street_name"}
-                                      value={values.street_name}
+                        <Form.Control as="select"
+                                      name={"region_id"}
+                                      value={values.region_id}
                                       onChange={handleChange}
-                                      isInvalid={!!errors.street_name}
-                        />
+                                      isInvalid={!!errors.region_id}
+                        >
+                          <option value={null}>Choose region</option>
+                          {regionsOptions}
+                        </Form.Control>
                         <Form.Control.Feedback type="invalid">
-                          {errors.street_name}
+                          {errors.region_id}
                         </Form.Control.Feedback>
-                      </Col>
-                      <Col sm={4}>
-                        <Form.Control type="text"
-                                      placeholder="Enter property building"
-                                      name={"street_number"}
-                                      value={values.street_number}
-                                      onChange={handleChange}
-                                      isInvalid={!!errors.street_number}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.street_number}
-                        </Form.Control.Feedback>
+                      {/*  <Form.Control type="text"*/}
+                      {/*                placeholder="Enter property address"*/}
+                      {/*                name={"street_name"}*/}
+                      {/*                value={values.street_name}*/}
+                      {/*                onChange={handleChange}*/}
+                      {/*                isInvalid={!!errors.street_name}*/}
+                      {/*  />*/}
+                      {/*  <Form.Control.Feedback type="invalid">*/}
+                      {/*    {errors.street_name}*/}
+                      {/*  </Form.Control.Feedback>*/}
+                      {/*</Col>*/}
+                      {/*<Col sm={4}>*/}
+                      {/*  <Form.Control type="text"*/}
+                      {/*                placeholder="Enter property building"*/}
+                      {/*                name={"street_number"}*/}
+                      {/*                value={values.street_number}*/}
+                      {/*                onChange={handleChange}*/}
+                      {/*                isInvalid={!!errors.street_number}*/}
+                      {/*  />*/}
+                      {/*  <Form.Control.Feedback type="invalid">*/}
+                      {/*    {errors.street_number}*/}
+                      {/*  </Form.Control.Feedback>*/}
                       </Col>
                     </Form.Group>
 

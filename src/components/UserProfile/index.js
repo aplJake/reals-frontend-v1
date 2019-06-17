@@ -7,7 +7,7 @@ import {Button, Col, Container, Row} from "react-bootstrap";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
 
-const ListingItem = ({listing, removeOnClick, updateOnClick}) => (
+const ListingItem = ({listing, removeOnClick}) => (
   <SSectionListing>
     <Container>
       <Row>
@@ -209,11 +209,11 @@ class UserProfile extends Component {
     }
   };
 
-  deleteListingHandler = (countryID) => {
+  deleteListingHandler = (propertyID) => {
     axios
-      .delete(`http://localhost:2308/api/countries/${countryID}`)
+      .delete(`http://localhost:2308/api/property/delete/${propertyID}`)
       .then(response => {
-        console.log("Country deleted status: ", response);
+        console.log("Property deleted status: ", response);
       })
       .catch(error => console.log(error));
   };

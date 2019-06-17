@@ -96,7 +96,7 @@ const PropertyDescription = ({listingData, propertyData, streetData}) => {
         </Row>
         <Row>
           <Col className={"col"}>
-            <SSectionH5>Street: {streetData.street_name}, b.{streetData.street_number}</SSectionH5>
+            <SSectionH5>Region: {streetData.region_name}</SSectionH5>
           </Col>
         </Row>
 
@@ -134,7 +134,7 @@ class PropertyPage extends React.Component {
       listingData: {
         property_listing: {
           property_id: "",
-          addresses_id: "",
+          region_id: "",
           user_id: "",
           listing_description: "",
           listing_price: "",
@@ -142,9 +142,8 @@ class PropertyPage extends React.Component {
           listing_is_active: true,
           created_at: "",
           updated_at: "",
-          addresses: {
-            street_name: "",
-            street_number: "",
+          regions: {
+            region_name: "",
             city_id: "",
             country_id: "",
           }
@@ -160,11 +159,10 @@ class PropertyPage extends React.Component {
           max_floor_number: "",
           property_floor_number: ""
         },
-        address: {
-          addresses_id: "",
-          street_name: "",
-          street_number: "",
+        regions: {
+          region_name: "",
           city_id: "",
+          country_id: "",
         },
         listingQueue: {
           queue: [],
@@ -207,7 +205,7 @@ class PropertyPage extends React.Component {
             <PropertyDescription
               listingData={this.state.listingData.property_listing}
               propertyData={this.state.listingData.property}
-              streetData={this.state.listingData.address}
+              streetData={this.state.listingData.regions}
             />
           </Col>
           <Col sm={12} md={4}>
