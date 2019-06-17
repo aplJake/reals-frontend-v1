@@ -179,7 +179,10 @@ class PropertyPage extends React.Component {
     let token = decode(auth);
     this.setState({
       userPayload: token
+    }, () => {
+      console.log("user data", this.state.userPayload);
     });
+
 
     const {id} = this.props.match.params;
     console.log("property id is", id);
@@ -198,6 +201,9 @@ class PropertyPage extends React.Component {
   }
 
   render() {
+
+    console.log("propertyid, userid", this.props.match.params.id, this.state.userPayload.UserId)
+
     return(
       <Container>
         <Row>
@@ -212,12 +218,14 @@ class PropertyPage extends React.Component {
             <Row>
               <PropertyQueue
                 propertyID={this.props.match.params.id}
-                />
+                userID={this.state.userPayload.UserId.toString()}
+              />
             </Row>
           </Col>
         </Row>
       </Container>
     )
+
   }
 }
 

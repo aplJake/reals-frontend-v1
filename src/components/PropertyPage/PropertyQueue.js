@@ -26,7 +26,7 @@ const SSectinWrapper = styled.div`
 
 const SContainer = styled.div`
   button {
-    min-width: 100px;
+    //min-width: 200px;
     width: 100%;
   }
   
@@ -35,8 +35,8 @@ const SContainer = styled.div`
   }
   .container {
     margin: 20px 10px;
-    padding: 0 30px 30px;
-    max-width: 300px;
+    padding: 0 50px 50px;
+    max-width: 400px;
     position: fixed;
     background: red;
     border-radius: 5px;
@@ -44,6 +44,23 @@ const SContainer = styled.div`
     -webkit-box-shadow: 0 4px 5px -6px #999;
     -moz-box-shadow: 0 4px 5px -6px #999;
     box-shadow: 0 4px 5px -6px #999;
+  }
+  
+  .queue-item {
+    .btn {
+      width: 80px !important;
+      padding: 0;
+    }
+  }
+  
+  .col-md-4, .col-md-8 {
+    h5 {
+      margin-top: 13px;
+    }
+  }
+  .btn {
+    width: 200px;
+    margin: 8px 0;
   }
 `;
 
@@ -64,12 +81,12 @@ class PropertyQueue extends React.Component {
     }
   };
 
-  handleButtonClick = () => {
+  handleButtonClick = (userID, propertyID) => {
     if(!this.state.isOpened) {
       this.setState({isOpened: true});
       this.getQueueData();
     } else {
-      this.addNewUserToQueue();
+      this.addNewUserToQueue(userID, propertyID);
     }
   };
 
@@ -88,8 +105,20 @@ class PropertyQueue extends React.Component {
     // console.log("value", this.state.profileData.profile.profile_description.String)
   };
 
-  addNewUserToQueue = () => {
-
+  addNewUserToQueue = (userID, propertyID) => {
+    console.log("Add new user to the queue", userID, propertyID);
+    Axios
+      .post(`http://localhost:2308/api/queue/`, {
+        "user_id": userID,
+        "property_id": propertyID
+      })
+      .then(response => {
+        console.log("Queue POST server respond:", response.data)
+        this.setState({
+          isOpened: false
+        })
+      })
+      .catch(error => console.log(error));
   };
 
   renderProfileNullableData = () => {
@@ -107,15 +136,38 @@ class PropertyQueue extends React.Component {
     }
   };
 
+  handleCancelQueue = (userID, propertyID) => {
+    Axios
+      .delete(`http://localhost:2308/api/queue/${userID}/property/${propertyID}`)
+      .then(response => {
+        console.log("Queue deleted status: ", response.data);
+        this.setState({
+          isOpened: false
+        })
+      })
+      .catch(error => console.log(error));
+  };
+
   render() {
     let queueProfile = null;
     let queueMap;
 
+
+
     if(this.state.isOpened && this.state.profileData.queue != null && this.state.profileData.queue.length > 0) {
+      // console.log("property queue delte button for the user in queue (userID props, queue userID",
+      //   this.props.userID, this.state.profileData[0].user_id);
+
       queueMap = this.state.profileData.queue.map((q) =>
-          <Row key={q.user_name}>
+          <Row key={q.user_name} className={"queue-item"}>
             <Col md={4}><SSectionH5>{q.user_name}</SSectionH5></Col>
-            <Col md={8}><SSectionH5>{new Date(q.queue_time).toLocaleTimeString()}</SSectionH5></Col>
+            <Col md={4}><SSectionH5>{new Date(q.queue_time).toLocaleTimeString()}</SSectionH5></Col>
+            {/*<h5> user id{this.props.userID} {q.user_id}</h5>*/}
+            {this.props.userID == q.user_id && (
+              <Col md={4}>
+                <Button onClick={()=>{this.handleCancelQueue(q.user_id, this.props.propertyID)}}>Cancel</Button>
+              </Col>
+            )}
           </Row>
       )
     }
@@ -159,7 +211,7 @@ class PropertyQueue extends React.Component {
             )}
             <Row>
               <Col sm={8} md={8} className={"btn-wrapper"}>
-                <Button primary onClick={()=>{this.handleButtonClick()}}>
+                <Button primary onClick={()=>{this.handleButtonClick(this.props.userID, this.props.propertyID)}}>
                   {this.state.isOpened ? ("Add"):("Show")}
                 </Button>
               </Col>
