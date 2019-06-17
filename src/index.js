@@ -29,6 +29,7 @@ import PropertyPage from "./components/PropertyPage";
 import AdminsAdminInfo from "./components/AdminPage/AdminsAdminInfo";
 import CitiesAdminInfo from "./components/AdminPage/CitiesAdminInfo";
 import UpdatePropertyForm from "./components/PropertForm/UpdatePropertyForm";
+import RegionsAdminInfo from "./components/AdminPage/RegionsAdminInfo";
 
 const store = createStore(
   reducers,
@@ -60,6 +61,7 @@ ReactDOM.render(
         <Route exact path="/admin/admins" component={AdminsAdminInfo}/>
         <Route exact path="/admin/countries" component={CountriesAdminInfo}/>
         <Route exact path="/admin/cities" component={CitiesAdminInfo}/>
+        <Route exact path="/admin/regions" component={RegionsAdminInfo}/>
       </App>
     </BrowserRouter>
   </Provider>,

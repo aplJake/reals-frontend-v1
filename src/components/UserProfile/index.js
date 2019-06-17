@@ -122,6 +122,11 @@ class UserProfile extends Component {
   }
 
   componentWillMount() {
+    if(this.props.auth == null) {
+      this.props.history.push("/");
+      return
+    }
+
     const {auth} = this.props;
     let token = decode(auth);
     this.setState({

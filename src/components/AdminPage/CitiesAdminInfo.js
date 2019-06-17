@@ -1,7 +1,7 @@
 import requireAuth from "../requireAuth";
 import decode from "jwt-decode";
 import Axios from "axios";
-import {Button, Col, Form, Table} from "react-bootstrap";
+import {Alert, Button, Col, Form, Table} from "react-bootstrap";
 import React, {Fragment, useState} from "react"
 import {AdminWrapper} from "./index";
 import styled from "styled-components";
@@ -114,6 +114,7 @@ class CitiesAdminInfo extends React.Component {
             },
             cities: [],
             countryDropdownList: [],
+            message: null,
         }
     }
 
@@ -184,7 +185,10 @@ class CitiesAdminInfo extends React.Component {
         Axios
           .delete(`http://localhost:2308/api/cities/${cityID}`)
           .then(response => {
-              console.log("City deleted status: ", response);
+            console.log("City deleted status: ", response);
+            this.setState({
+              message: response.data.message,
+            })
           })
           .catch(error => console.log(error));
     };
@@ -204,22 +208,46 @@ class CitiesAdminInfo extends React.Component {
         })
     };
 
+    handleCloseWarningMsg = () => {
+      this.setState({
+        message: null,
+      })
+    };
+
     render() {
         if (this.state.cities != null && this.state.cities.length > 0) {
             return (
               <AdminWrapper adminUserType={this.state.tokenPayload.UserType}>
                   {this.state.onEditMode ? (
                     <Fragment>
-                        <h3>Edit mode</h3>
+                      <h3>Edit mode</h3>
+                      {this.state.message && (
+                        <Alert variant="danger"
+                               onClose={this.handleCloseWarningMsg}
+                               dismissible>
+                          {this.state.message}
+                        </Alert>
+                      )}
                       <FormExample handlerSubmit={this.handleCountryAddSubmit}
                                    defaultValues={this.state.countryOnEdit}
                                    countryList={this.state.countryDropdownList}
                       />
                     </Fragment>
                   ) : (
-                    <FormExample handlerSubmit={this.handleCountryAddSubmit}
-                                 countryList={this.state.countryDropdownList}
-                    />
+                    <Fragment>
+                      <h3>Edit mode</h3>
+                      {this.state.message && (
+                        <Alert variant="danger"
+                               onClose={this.handleCloseWarningMsg}
+                               dismissible>
+                          {this.state.message}
+                        </Alert>
+                      )}
+                      <FormExample handlerSubmit={this.handleCountryAddSubmit}
+                                   countryList={this.state.countryDropdownList}
+                      />
+                    </Fragment>
+
                   )}
                   <Table responsive striped bordered hover>
                       <thead>

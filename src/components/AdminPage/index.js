@@ -77,6 +77,7 @@ export const AdminWrapper = ({children, adminUserType}) => (
       )}
       <Link to={`/admin/countries`}>Countries</Link>
       <Link to={`/admin/cities`}>Cities</Link>
+      <Link to={`/admin/regions`}>Regions</Link>
     </SideNav>
     <MainSidebarContent>
       {children}
@@ -154,17 +155,11 @@ class AdminPage extends React.Component {
     if(pageAccess && tokenPayload) {
       return(
         <AdminWrapper adminUserType={tokenPayload.UserType}>
-          {/*<SideNav>*/}
-          {/*  <Link to={`${this.props.match.url}/users`}>Users</Link>*/}
-          {/*  <Link to={`${this.props.match.url}/listings`}>Listings</Link>*/}
-          {/*  <Link to={`${this.props.match.url}/countries`}>Countries</Link>*/}
-          {/*</SideNav>*/}
           <h3>Admin Control Page</h3>
         </AdminWrapper>
 
       )
     } else {
-      // return         <div>You are not an Admin user</div>
       return <Redirect to='/' />
     }
 

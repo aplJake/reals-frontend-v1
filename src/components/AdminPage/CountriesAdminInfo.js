@@ -1,7 +1,7 @@
 import requireAuth from "../requireAuth";
 import decode from "jwt-decode";
 import Axios from "axios";
-import {Button, Col, Form, Table} from "react-bootstrap";
+import {Alert, Button, Col, Form, Table} from "react-bootstrap";
 import React, {Fragment, useState} from "react"
 import {AdminWrapper} from "./index";
 import styled from "styled-components";
@@ -94,7 +94,8 @@ class CountriesAdminInfo extends React.Component {
         country_id: "",
         country_name: "",
         country_code: "",
-      }
+      },
+      message: null,
     }
   }
 
@@ -151,6 +152,9 @@ class CountriesAdminInfo extends React.Component {
       .delete(`http://localhost:2308/api/countries/${countryID}`)
       .then(response => {
         console.log("Country deleted status: ", response);
+        this.setState({
+          message: response.data.message,
+        })
       })
       .catch(error => console.log(error));
   };
@@ -170,6 +174,12 @@ class CountriesAdminInfo extends React.Component {
     })
   };
 
+  handleCloseWarningMsg = () => {
+    this.setState({
+      message: null,
+    })
+  };
+
   render() {
     if (this.state.countries != null && this.state.countries.length > 0) {
       return (
@@ -177,12 +187,28 @@ class CountriesAdminInfo extends React.Component {
           {this.state.onEditMode ? (
             <Fragment>
               <h3>Edit mode</h3>
+              {this.state.message && (
+                <Alert variant="danger"
+                       onClose={this.handleCloseWarningMsg}
+                       dismissible>
+                  {this.state.message}
+                </Alert>
+              )}
               <FormExample handlerSubmit={this.handleCountryAddSubmit}
                            defaultValues={this.state.countryOnEdit}
               />
             </Fragment>
           ) : (
-            <FormExample handlerSubmit={this.handleCountryAddSubmit}/>
+            <Fragment>
+              {this.state.message && (
+                <Alert variant="danger"
+                       onClose={this.handleCloseWarningMsg}
+                       dismissible>
+                  {this.state.message}
+                </Alert>
+              )}
+              <FormExample handlerSubmit={this.handleCountryAddSubmit}/>
+            </Fragment>
           )}
           <Table responsive striped bordered hover>
             <thead>
