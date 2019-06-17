@@ -2,8 +2,9 @@ import axios from "axios";
 import { AUTH_USER, AUTH_ERROR } from "./types";
 
 export const signup = (formProps, callback) => async dispatch => {
+  let response;
   try {
-    const response = await axios.post(
+    response = await axios.post(
       "http://localhost:2308/api/signup",
       formProps
     );
@@ -14,14 +15,14 @@ export const signup = (formProps, callback) => async dispatch => {
     // console.log("signup a 2 token", response.data.account.token);
 
 
-    // console.log("signup token", response.data.token);
+    console.log("signup token", response.data);
       
 
     dispatch({ type: AUTH_USER, payload: response.data.account.token });
     localStorage.setItem("token", response.data.account.token);
     callback();
   } catch (e) {
-    dispatch({ type: AUTH_ERROR, payload: "Email in use" });
+    dispatch({ type: AUTH_ERROR, payload: response.data.message });
   }
 };
 

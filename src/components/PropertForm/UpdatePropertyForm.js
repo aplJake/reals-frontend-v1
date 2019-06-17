@@ -471,28 +471,6 @@ class UpdatePropertyForm extends React.Component {
                         <Form.Control.Feedback type="invalid">
                           {errors.region_id}
                         </Form.Control.Feedback>
-                      {/*  <Form.Control type="text"*/}
-                      {/*                placeholder="Enter property address"*/}
-                      {/*                name={"street_name"}*/}
-                      {/*                value={values.street_name}*/}
-                      {/*                onChange={handleChange}*/}
-                      {/*                isInvalid={!!errors.street_name}*/}
-                      {/*  />*/}
-                      {/*  <Form.Control.Feedback type="invalid">*/}
-                      {/*    {errors.street_name}*/}
-                      {/*  </Form.Control.Feedback>*/}
-                      {/*</Col>*/}
-                      {/*<Col sm={4}>*/}
-                      {/*  <Form.Control type="text"*/}
-                      {/*                placeholder="Enter property building"*/}
-                      {/*                name={"street_number"}*/}
-                      {/*                value={values.street_number}*/}
-                      {/*                onChange={handleChange}*/}
-                      {/*                isInvalid={!!errors.street_number}*/}
-                      {/*  />*/}
-                      {/*  <Form.Control.Feedback type="invalid">*/}
-                      {/*    {errors.street_number}*/}
-                      {/*  </Form.Control.Feedback>*/}
                       </Col>
                     </Form.Group>
 
