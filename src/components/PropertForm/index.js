@@ -38,7 +38,6 @@ const SSectionH4 = styled.h4`
 `;
 
 
-
 const schema = Yup.object({
   user_id: Yup.string(),
   construction_type: Yup.string()
@@ -70,17 +69,17 @@ const schema = Yup.object({
     .test(
       'Floor numbers matches',
       'Floor number not matches',
-      function(value) {
-        const {path, createError } = this;
+      function (value) {
+        const {path, createError} = this;
         let maxFloor = parseInt(this.parent.max_floor_number, 10);
         let valueInteger = parseInt(value, 10);
 
-        if(valueInteger > maxFloor) {
+        if (valueInteger > maxFloor) {
           return createError(path, "Message");
         } else {
           return true;
         }
-    })
+      })
     .matches(
       /^[0-9]*$/,
       'This field should contain only numbers'
@@ -106,7 +105,7 @@ const schema = Yup.object({
   country_id: Yup.number()
     .required('Please specify the value'),
   city_id: Yup.number()
-  .required('Please specify the value'),
+    .required('Please specify the value'),
   region_id: Yup.string()
     .required("Please specify the value")
 });
@@ -178,7 +177,7 @@ class PropertyForm extends React.Component {
   };
 
   formikFormSubmit = (propertyModel, errors) => {
-    if(Object.entries(errors).length === 0 && Object.entries(propertyModel).length > 6) {
+    if (Object.entries(errors).length === 0 && Object.entries(propertyModel).length > 6) {
       // e.preventDefault();
 
       let jsonValues = JSON.stringify(propertyModel, null, 2);
@@ -207,26 +206,25 @@ class PropertyForm extends React.Component {
       )
     }
 
-  if (this.state.choosedCountryId != null && this.state.cityList != null && this.state.cityList.length > 0) {
-    cityOptions = this.state.cityList.map((city) =>
-      <option key={city.city_id}
-              id={city.city_id}
-              value={city.city_id}>
-        {city.city_name}
-      </option>
-    )
-  }
+    if (this.state.choosedCountryId != null && this.state.cityList != null && this.state.cityList.length > 0) {
+      cityOptions = this.state.cityList.map((city) =>
+        <option key={city.city_id}
+                id={city.city_id}
+                value={city.city_id}>
+          {city.city_name}
+        </option>
+      )
+    }
 
-  if (this.state.regionsList && this.state.regionsList.length > 0) {
-    regionsOptions = this.state.regionsList.map((region) =>
-      <option key={region.region_id}
-              id={region.region_id}
-              value={region.region_id}>
-        {region.region_name}
-      </option>
-    )
-  }
-
+    if (this.state.regionsList && this.state.regionsList.length > 0) {
+      regionsOptions = this.state.regionsList.map((region) =>
+        <option key={region.region_id}
+                id={region.region_id}
+                value={region.region_id}>
+          {region.region_name}
+        </option>
+      )
+    }
 
 
     return (
@@ -244,22 +242,22 @@ class PropertyForm extends React.Component {
               initialValues={{
                 user_id: this.state.user_id,
                 country_id: this.state.choosedCountryId,
-                city_id:this.state.choosedCityId,
+                city_id: this.state.choosedCityId,
                 construction_type: "apartment",
                 listing_currency: "usd",
                 listing_is_active: "true",
               }}
             >
               {({
-                handleChange,
-                values,
-                errors,
-              }) => (
+                  handleChange,
+                  values,
+                  errors,
+                }) => (
                 <Form noValidate onSubmit={(e) => {
                   e.preventDefault();
                   console.log("Values in submit", values);
                   this.formikFormSubmit(values, errors)
-                  }
+                }
                 }>
 
                   {/* Construction type*/}
@@ -458,15 +456,15 @@ class PropertyForm extends React.Component {
                         <option value={null}>Choose region</option>
                         {regionsOptions}
                       </Form.Control>
-                        <Form.Control.Feedback type="invalid">
-                          {errors.region_id}
-                        </Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.region_id}
+                      </Form.Control.Feedback>
                     </Col>
                   </Form.Group>
 
                   <Button type="submit">Add listings</Button>
                 </Form>
-                )}
+              )}
             </Formik>
 
             {/* End of Formik form */}

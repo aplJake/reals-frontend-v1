@@ -27,9 +27,9 @@ class MainPage extends React.Component {
 
   componentWillMount() {
     let API_URL;
-    if(this.props.pageType == null) {
+    if (this.props.pageType == null) {
       API_URL = `http://localhost:2308/api/pages/all-listings`;
-    } else if(this.props.pageType == "apartments") {
+    } else if (this.props.pageType == "apartments") {
       API_URL = `http://localhost:2308/api/pages/apartments`;
     } else {
       API_URL = `http://localhost:2308/api/pages/homes`;
@@ -71,4 +71,5 @@ class MainPage extends React.Component {
     )
   }
 }
+
 export default MainPage;

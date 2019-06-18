@@ -2,7 +2,7 @@ import requireAuth from "../requireAuth";
 import decode from "jwt-decode";
 import Axios from "axios";
 import {Alert, Button, Col, Form, Table} from "react-bootstrap";
-import React, {Fragment, useState} from "react"
+import React, {Fragment} from "react"
 import {AdminWrapper} from "./index";
 import styled from "styled-components";
 import {Formik,} from "formik";
@@ -126,7 +126,7 @@ class CountriesAdminInfo extends React.Component {
   handleCountryAddSubmit = (jsonedCountry) => {
     console.log("Country to send", jsonedCountry);
 
-    if(this.state.onEditMode) {
+    if (this.state.onEditMode) {
       console.log("on edit mode");
       Axios
         .put(`http://localhost:2308/api/countries`,

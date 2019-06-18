@@ -1,7 +1,7 @@
 import React from "react";
-import { Col, Container, Jumbotron, FormControl } from "react-bootstrap";
+import {Col, Container, FormControl, Jumbotron} from "react-bootstrap";
 
-export const BootstrapReduxField = ({ type, placeholder, input, min }) => (
+export const BootstrapReduxField = ({type, placeholder, input, min}) => (
   <FormControl
     type={type}
     placeholder={placeholder}
@@ -14,7 +14,7 @@ export const BootstrapReduxField = ({ type, placeholder, input, min }) => (
 export const AuthWrapper = props => (
   <Jumbotron>
     <Container>
-      <Col md={{ span: 3, offset: 4 }}>{props.children}</Col>
+      <Col md={{span: 3, offset: 4}}>{props.children}</Col>
     </Container>
   </Jumbotron>
 );

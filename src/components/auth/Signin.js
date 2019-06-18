@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { reduxForm, Field } from "redux-form";
-import { compose } from "redux";
-import { connect } from "react-redux";
+import React, {Component} from "react";
+import {Field, reduxForm} from "redux-form";
+import {compose} from "redux";
+import {connect} from "react-redux";
 import * as actions from "../../actions";
-import { Button, FormGroup, Form } from "react-bootstrap";
-import { BootstrapReduxField, AuthWrapper } from "./AuthWrapper";
+import {Button, Form, FormGroup} from "react-bootstrap";
+import {AuthWrapper, BootstrapReduxField} from "./AuthWrapper";
 
 class Signin extends Component {
   onSubmit = formProps => {
@@ -14,7 +14,7 @@ class Signin extends Component {
   };
 
   render() {
-    const { handleSubmit } = this.props;
+    const {handleSubmit} = this.props;
 
     return (
       <AuthWrapper>
@@ -53,7 +53,7 @@ class Signin extends Component {
 }
 
 function mapStateToProps(state) {
-  return { errorMessage: state.auth.errorMessage };
+  return {errorMessage: state.auth.errorMessage};
 }
 
 export default compose(
@@ -61,5 +61,5 @@ export default compose(
     mapStateToProps,
     actions
   ),
-  reduxForm({ form: "signin" })
+  reduxForm({form: "signin"})
 )(Signin);

@@ -1,10 +1,8 @@
-import React, {useState, useEffect, Fragment} from "react"
+import React, {Fragment} from "react"
 import requireAuth from "../requireAuth";
-import Axios from "axios";
 import decode from "jwt-decode";
 import {Link, Redirect} from "react-router-dom";
 import styled from "styled-components";
-import {Button, Table} from "react-bootstrap";
 
 export const SideNav = styled.div`
   padding-top: 80px;
@@ -49,8 +47,6 @@ export const MainSidebarContent = styled.div`
 `;
 
 
-
-
 export const ListingsAdminInfo = ({props}) => (
   <AdminWrapper>
     Listings info
@@ -65,7 +61,7 @@ export const CountriesAdminInfo = ({props}) => (
 
 const WrapperDiv = styled.div`
   margin-top: 80px;
-`
+`;
 export const AdminWrapper = ({children, adminUserType}) => (
   <WrapperDiv>
     <SideNav>
@@ -96,7 +92,7 @@ class AdminPage extends React.Component {
   }
 
   componentDidMount() {
-    const { auth } = this.props;
+    const {auth} = this.props;
 
     // Decode JWT data and get User Id
     let token = decode(auth);
@@ -109,9 +105,9 @@ class AdminPage extends React.Component {
 
 
     if (token.IsAdmin) {
-      console.log("Is Authenticated")
+      console.log("Is Authenticated");
 
-      if(token.UserId == null) {
+      if (token.UserId == null) {
         console.log("Token iss null")
       } else {
 
@@ -137,7 +133,7 @@ class AdminPage extends React.Component {
   }
 
   componentWillMount() {
-    const { auth } = this.props;
+    const {auth} = this.props;
 
     // Decode JWT data and get User Id
     let token = decode(auth);
@@ -152,17 +148,18 @@ class AdminPage extends React.Component {
   render() {
     const {pageAccess, tokenPayload} = this.state;
 
-    if(pageAccess && tokenPayload) {
-      return(
+    if (pageAccess && tokenPayload) {
+      return (
         <AdminWrapper adminUserType={tokenPayload.UserType}>
           <h3>Admin Control Page</h3>
         </AdminWrapper>
 
       )
     } else {
-      return <Redirect to='/' />
+      return <Redirect to='/'/>
     }
 
   }
 }
+
 export default requireAuth(AdminPage);

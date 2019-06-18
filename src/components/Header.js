@@ -2,7 +2,7 @@ import React, {Component, Fragment} from "react";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import "./HeaderStyle.css";
-import {Button, Container, Image, Nav, Navbar} from "react-bootstrap";
+import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import styled from "styled-components";
 
 const Style = styled.div`

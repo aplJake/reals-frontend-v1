@@ -38,7 +38,6 @@ const SSectionH4 = styled.h4`
 `;
 
 
-
 const schema = Yup.object({
   user_id: Yup.string(),
   construction_type: Yup.string()
@@ -70,12 +69,12 @@ const schema = Yup.object({
     .test(
       'Floor numbers matches',
       'Floor number not matches',
-      function(value) {
-        const {path, createError } = this;
+      function (value) {
+        const {path, createError} = this;
         let maxFloor = parseInt(this.parent.max_floor_number, 10);
         let valueInteger = parseInt(value, 10);
 
-        if(valueInteger > maxFloor) {
+        if (valueInteger > maxFloor) {
           return createError(path, "Message");
         } else {
           return true;
@@ -172,7 +171,7 @@ class UpdatePropertyForm extends React.Component {
       .then(response => {
         this.setState({
           cityList: response.data.cities
-        },() => {
+        }, () => {
           this.getRegionsByCity(this.state.cityList[0].city_id)
         });
       })
@@ -192,7 +191,7 @@ class UpdatePropertyForm extends React.Component {
   };
 
   formikFormSubmit = (propertyModel, errors) => {
-    if(Object.entries(errors).length === 0 && Object.entries(propertyModel).length > 6) {
+    if (Object.entries(errors).length === 0 && Object.entries(propertyModel).length > 6) {
       // e.preventDefault();
 
       let jsonValues = JSON.stringify(propertyModel, null, 2);
@@ -244,7 +243,7 @@ class UpdatePropertyForm extends React.Component {
 
     console.log("init values ", this.state.propertyInitData);
 
-    if(this.state.propertyInitData) {
+    if (this.state.propertyInitData) {
 
       return (
         <Style>

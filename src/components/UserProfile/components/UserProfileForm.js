@@ -1,12 +1,5 @@
-import React, { Component } from "react";
-import {
-  Col,
-  Button,
-  Row,
-  FormGroup,
-  FormControl,
-  Container
-} from "react-bootstrap";
+import React, {Component} from "react";
+import {Button, Col, FormControl, FormGroup, Row} from "react-bootstrap";
 
 export default class UserProfileForm extends Component {
   constructor(props) {
@@ -53,30 +46,30 @@ export default class UserProfileForm extends Component {
   render() {
     return (
       <Row>
-      <Col md="10" sm={"10"}>
-        <form
-        >
-          <FormGroup controlId="profile_description">
-            <FormControl
-              autoComplete="off"
-              type="text"
-              placeholder="Enter your profile description"
-              value={this.state.newProfile.profileDescription}
-              onChange={this.handleInput}
-            />
-          </FormGroup>
-        </form>
-      </Col>
-      <Col md="2" sm={"2"} className="to-right">
-        <Button
-          type="submit"
-          onClick={this.submitForm}
-          className="to-right"
-        >
-          Add
-        </Button>
-      </Col>
-    </Row>
+        <Col md="10" sm={"10"}>
+          <form
+          >
+            <FormGroup controlId="profile_description">
+              <FormControl
+                autoComplete="off"
+                type="text"
+                placeholder="Enter your profile description"
+                value={this.state.newProfile.profileDescription}
+                onChange={this.handleInput}
+              />
+            </FormGroup>
+          </form>
+        </Col>
+        <Col md="2" sm={"2"} className="to-right">
+          <Button
+            type="submit"
+            onClick={this.submitForm}
+            className="to-right"
+          >
+            Add
+          </Button>
+        </Col>
+      </Row>
     );
   }
 }

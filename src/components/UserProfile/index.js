@@ -122,7 +122,7 @@ class UserProfile extends Component {
   }
 
   componentWillMount() {
-    if(this.props.auth == null) {
+    if (this.props.auth == null) {
       this.props.history.push("/");
       return
     }
@@ -312,7 +312,7 @@ class UserProfile extends Component {
                   <SSectinHeaderWrapper>
                     {!this.state.tokenPayload.IsAdmin ? (
                       <SSectionH4>Added listings</SSectionH4>
-                    ): (
+                    ) : (
                       <SSectionH4>Admin Page</SSectionH4>
                     )}
                   </SSectinHeaderWrapper>
@@ -326,7 +326,7 @@ class UserProfile extends Component {
                           Add Property
                         </Button>
                       </Link>
-                    ): (
+                    ) : (
                       <Link to="/admin">
                         <Button variant="primary">
                           Admin Page

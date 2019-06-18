@@ -74,7 +74,7 @@ class NotificationPage extends React.Component {
     Axios
       .get(`http://localhost:2308/api/notifications/${token.UserId}`)
       .then(response => {
-        console.log("Response for notifications", response.data)
+        console.log("Response for notifications", response.data);
         this.setState({
           notifications: response.data.notifications
         })
@@ -100,7 +100,9 @@ class NotificationPage extends React.Component {
       notificationList = this.state.notifications.map((n) =>
         <Alert key={n.notification_id}
                variant="danger"
-               onClose={() => {this.handleNotificationRemove(n.notification_id)} }
+               onClose={() => {
+                 this.handleNotificationRemove(n.notification_id)
+               }}
                dismissible
         >
           Message: {n.text} Added: {new Date(n.created_at).toDateString()}
@@ -109,8 +111,7 @@ class NotificationPage extends React.Component {
     }
 
 
-
-    return(
+    return (
       <SPageBase>
         <SSection>
           <Container>
@@ -121,7 +122,7 @@ class NotificationPage extends React.Component {
               <React.Fragment>
                 {notificationList}
               </React.Fragment>
-            ):(
+            ) : (
               <SSectionH5>You dont have any messages</SSectionH5>
             )}
           </Container>

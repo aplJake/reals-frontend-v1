@@ -70,19 +70,19 @@ class PropertyQueue extends React.Component {
     this.state = {
       isOpened: false,
       profileData: {
-          queue: [],
-          profile: {
-            profile_description: {string: "", valid: ""},
-            telephone_number: {string: "", valid: ""},
-            user_name: "",
-            user_email: "",
-          }
+        queue: [],
+        profile: {
+          profile_description: {string: "", valid: ""},
+          telephone_number: {string: "", valid: ""},
+          user_name: "",
+          user_email: "",
+        }
       },
     }
   };
 
   handleButtonClick = (userID, propertyID) => {
-    if(!this.state.isOpened) {
+    if (!this.state.isOpened) {
       this.setState({isOpened: true});
       this.getQueueData();
     } else {
@@ -98,7 +98,9 @@ class PropertyQueue extends React.Component {
 
         this.setState({
           profileData: response.data.property_queue_data,
-        }, () => {console.log("queued data", this.state.profileData)});
+        }, () => {
+          console.log("queued data", this.state.profileData)
+        });
       })
       .catch(error => console.log(error));
 
@@ -113,7 +115,7 @@ class PropertyQueue extends React.Component {
         "property_id": propertyID
       })
       .then(response => {
-        console.log("Queue POST server respond:", response.data)
+        console.log("Queue POST server respond:", response.data);
         this.setState({
           isOpened: false
         })
@@ -122,7 +124,7 @@ class PropertyQueue extends React.Component {
   };
 
   renderProfileNullableData = () => {
-    if(this.state.isOpened && this.state.profileData.profile.user_name.length > 0) {
+    if (this.state.isOpened && this.state.profileData.profile.user_name.length > 0) {
       return (
         <React.Fragment>
           <Row>
@@ -153,22 +155,23 @@ class PropertyQueue extends React.Component {
     let queueMap;
 
 
-
-    if(this.state.isOpened && this.state.profileData.queue != null && this.state.profileData.queue.length > 0) {
+    if (this.state.isOpened && this.state.profileData.queue != null && this.state.profileData.queue.length > 0) {
       // console.log("property queue delte button for the user in queue (userID props, queue userID",
       //   this.props.userID, this.state.profileData[0].user_id);
 
       queueMap = this.state.profileData.queue.map((q) =>
-          <Row key={q.user_name} className={"queue-item"}>
-            <Col md={4}><SSectionH5>{q.user_name}</SSectionH5></Col>
-            <Col md={4}><SSectionH5>{new Date(q.queue_time).toLocaleTimeString()}</SSectionH5></Col>
-            {/*<h5> user id{this.props.userID} {q.user_id}</h5>*/}
-            {this.props.userID == q.user_id && (
-              <Col md={4}>
-                <Button onClick={()=>{this.handleCancelQueue(q.user_id, this.props.propertyID)}}>Cancel</Button>
-              </Col>
-            )}
-          </Row>
+        <Row key={q.user_name} className={"queue-item"}>
+          <Col md={4}><SSectionH5>{q.user_name}</SSectionH5></Col>
+          <Col md={4}><SSectionH5>{new Date(q.queue_time).toLocaleTimeString()}</SSectionH5></Col>
+          {/*<h5> user id{this.props.userID} {q.user_id}</h5>*/}
+          {this.props.userID == q.user_id && (
+            <Col md={4}>
+              <Button onClick={() => {
+                this.handleCancelQueue(q.user_id, this.props.propertyID)
+              }}>Cancel</Button>
+            </Col>
+          )}
+        </Row>
       )
     }
 
@@ -211,8 +214,10 @@ class PropertyQueue extends React.Component {
             )}
             <Row>
               <Col sm={8} md={8} className={"btn-wrapper"}>
-                <Button primary onClick={()=>{this.handleButtonClick(this.props.userID, this.props.propertyID)}}>
-                  {this.state.isOpened ? ("Add"):("Show")}
+                <Button primary onClick={() => {
+                  this.handleButtonClick(this.props.userID, this.props.propertyID)
+                }}>
+                  {this.state.isOpened ? ("Add") : ("Show")}
                 </Button>
               </Col>
             </Row>

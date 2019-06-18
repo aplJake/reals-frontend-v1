@@ -1,6 +1,5 @@
 import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
-import SideProfile from "./SideProfile";
 import PropertyQueue from "./PropertyQueue";
 import Axios from "axios";
 import styled from "styled-components";
@@ -63,10 +62,10 @@ const SContainer = styled.div`
   .col-date {
     padding-bottom: 0;
   }
-`
+`;
 
 const PropertyDescription = ({listingData, propertyData, streetData}) => {
-  return(
+  return (
     <SContainer>
       <Container>
         <Row>
@@ -75,14 +74,15 @@ const PropertyDescription = ({listingData, propertyData, streetData}) => {
           </SSectinWrapper>
         </Row>
         <Row>
-          <SSectionH5 className="primary-h">{propertyData.construction_type.charAt(0).toUpperCase() + propertyData.construction_type.slice(1)}</SSectionH5>
+          <SSectionH5
+            className="primary-h">{propertyData.construction_type.charAt(0).toUpperCase() + propertyData.construction_type.slice(1)}</SSectionH5>
         </Row>
         <Row>
           <Col md={2} className={"col"}>
             <SSectionH5>{listingData.listing_price} {listingData.listing_currency}</SSectionH5>
           </Col>
           <Col md={2} className={"col"}>
-            <SSectionH5>{propertyData.room_number.replace(/"/g,"")} | {propertyData.bathroom_number} bthr</SSectionH5>
+            <SSectionH5>{propertyData.room_number.replace(/"/g, "")} | {propertyData.bathroom_number} bthr</SSectionH5>
           </Col>
         </Row>
         <Row>
@@ -195,16 +195,18 @@ class PropertyPage extends React.Component {
 
         this.setState({
           listingData: response.data.listing_data,
-        }, () => {console.log("listing data", this.state.listingData)});
+        }, () => {
+          console.log("listing data", this.state.listingData)
+        });
       })
       .catch(error => console.log(error));
   }
 
   render() {
 
-    console.log("propertyid, userid", this.props.match.params.id, this.state.userPayload.UserId)
+    console.log("propertyid, userid", this.props.match.params.id, this.state.userPayload.UserId);
 
-    return(
+    return (
       <Container>
         <Row>
           <Col sm={12} md={8}>
