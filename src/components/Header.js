@@ -2,7 +2,7 @@ import React, {Component, Fragment} from "react";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import "./HeaderStyle.css";
-import {Button, Container, Nav, Navbar} from "react-bootstrap";
+import {Button, Container, Image, Nav, Navbar} from "react-bootstrap";
 import styled from "styled-components";
 
 const Style = styled.div`
@@ -60,6 +60,11 @@ class Header extends Component {
           <Nav.Item>
             <Link to="/profile">
               <Button variant="link">My Profile</Button>
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link to="/notifications">
+              <Button variant={"link"}>Notifications</Button>
             </Link>
           </Nav.Item>
         </Fragment>
